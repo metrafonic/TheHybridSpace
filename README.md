@@ -6,7 +6,7 @@ PostgreSQL server
 NodeJS
 
 ## Installing & running:
-``
+```
 # Install node dependancies
 npm install
 
