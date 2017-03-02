@@ -107,7 +107,7 @@ Edit evaluation:
 # Edit data of evaluation 4
 curl -X PUT --data "person=2&x=99&y=77&slider1=10&slider2=20&comment=edited" http://127.0.0.1:3000/api/evaluation/4
 
-{"status":"success","message":"Updated evaluation"}[mhedberg@virfid TheHybridSpace]
+{"status":"success","message":"Updated evaluation"}
 ```
 Delete evaluation:
 ```
