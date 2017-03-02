@@ -1,10 +1,15 @@
 # TheHybridSpace - Backend
 **By Mathias Hedberg**
 
-Installing & running:
-```
-# Install dependancies
+## Requirements:
+PostgreSQL server
+NodeJS
+
+## Installing & running:
+``
+# Install node dependancies
 npm install
+
 # Initialize PostgreSQL DB
 psql -f people.sql
 
