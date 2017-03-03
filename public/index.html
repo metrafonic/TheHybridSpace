@@ -5,9 +5,17 @@
     <title>How to Parse a JSON file using jQuery</title>
 
     <style>
+        html {
+            display: table;
+            margin: auto;
+        }
         body{
-            text-align: center;
+            text-align: left;
             font-family: arial;
+            width: 800px;
+        }
+        h2, h1{
+            text-align: center;
         }
 
         .button{
@@ -15,6 +23,9 @@
             font-size:16px;
             font-weight: bold;
             padding:5px 10px;
+        }
+        .footer{
+            text-align: center;
         }
         table {
             font-family: arial, sans-serif;
@@ -39,9 +50,16 @@
 
   <h1 id="title">The Hyper Space - Data collected:</h1>
   <hr>
-  Automatic updates enabled
-  <div id="text"><h3>No data recieved</h3></div>
+  <h2>Evaluations</h3>
+  <div id="text1"><h3>No data recieved</h3></div>
   <div id="table1"></div>
+  Automatic updates enabled
+  <h2>Persons</h3>
+  <div id="text2"><h3>No data recieved</h3></div>
+  <div id="table2"></div>
+  Automatic updates enabled
+  <hr>
+  <div class="footer">Made by Mathias Hedberg</div>
     <script>
 
       function ajax_get(url, callback) {
@@ -62,26 +80,25 @@
       xmlhttp.open("GET", url, true);
       xmlhttp.send();
       }
-      function updateDiv(){
+      function updateEvaluations(){
         ajax_get('/api/evaluations', function(data) {
             document.getElementById("title").innerHTML = "The Hyper Space - All data collected:";
-            var html = "<h3>" + data["message"] + "</h3>";
+            var html1 = "<h3>" + data["message"] + "</h3>";
             var table1 = "";
 
-            html += "</ul>";
-            table1 += "<table><th>Eval ID</th><th>Person ID</th><th>X</th><th>Y</th><th>Slider1</th><th>Slider2</th><th>Comment</th>";
+            html1 += "</ul>";
+            table1 += "<table><th>ID</th><th>Person</th><th>Team</th><th>Group</th><th>X</th><th>Y</th><th>Slider1</th><th>Slider2</th><th>Comment</th>";
             for (var i=0; i < data["data"].length; i++) {
-              table1 += '<tr><td><a href="/api/evaluation/' + data["data"][i]["evalid"] + '">'+ data["data"][i]["evalid"] + "</a></td>" + "<td>" + data["data"][i]["person"] + "</td><td>" + data["data"][i]["x"] + "</td><td>" + data["data"][i]["y"] + "</td><td>" + data["data"][i]["slider1"] + "</td><td>" + data["data"][i]["slider2"] + "</td><td>" + data["data"][i]["comment"] + "</td></tr>";
+              table1 += "<tr><td><a href='/api/evaluation/" + data["data"][i]["evalid"] + "'>" + data["data"][i]["evalid"] + "</a></td><td><a href='/api/evaluations/" + data["data"][i]["person"] + "'>" + data["data"][i]["person"] + "</a></td><td>" + data["data"][i]["team"] + "</td><td>" + data["data"][i]["collection"] + "</td><td>" + data["data"][i]["x"] + "</td><td>" + data["data"][i]["y"] + "</td><td>" + data["data"][i]["slider1"] + "</td><td>" + data["data"][i]["slider2"] + "</td><td>" + data["data"][i]["comment"] + "</td></tr>";
             }
             table1 += "</table>"
 
-            document.getElementById("text").innerHTML = html;
+            document.getElementById("text1").innerHTML = html1;
             document.getElementById("table1").innerHTML =table1
         });
       }
-      updateDiv();
-      setInterval(updateDiv, 5000);
-      //setInterval("ajax_get", 10000):
+      updateEvaluations();
+      setInterval(updateEvaluations, 5000);
     </script>
 
 </body>

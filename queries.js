@@ -17,11 +17,16 @@ module.exports = {
   getSingleEvaluation: getSingleEvaluation,
   createEvaluation: createEvaluation,
   updateEvaluation: updateEvaluation,
-  removeEvaluation: removeEvaluation
+  removeEvaluation: removeEvaluation,
+  getAllPersons: getAllPersons,
+  getSinglePerson: getSinglePerson,
+  createPerson: createPerson,
+  updatePerson: updatePerson,
+  removePerson: removePerson
 };
 
 function getAllEvaluations(req, res, next) {
-  db.any('select * from evaluations')
+  db.any('select * from persons INNER JOIN evaluations ON (persons.person = evaluations.person);')
     .then(function (data) {
       res.status(200)
         .json({
@@ -113,6 +118,86 @@ function removeEvaluation(req, res, next) {
         .json({
           status: 'success',
           message: `Removed ${result.rowCount} evaluation`
+        });
+      /* jshint ignore:end */
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function getAllPersons(req, res, next) {
+  db.any('select * from persons')
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: data,
+          message: 'Retrieved ALL persons'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function getSinglePerson(req, res, next) {
+  var evalID = parseInt(req.params.id);
+  db.one('select * from persons where person = $1', evalID)
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: data,
+          message: 'Retrieved single person'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function createPerson(req, res, next) {
+  req.body.person = parseInt(req.body.person);
+  db.none('insert into persons(person, team, collection)' +
+      'values(${person}, ${team}, ${collection})',
+    req.body)
+    .then(function () {
+      res.status(200)
+        .json({
+          status: 'success',
+          message: 'Inserted one person'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function updatePerson(req, res, next) {
+  db.none('update persons set team=$1, collection=$2 where person=$3',
+    [req.body.team,req.body.collection, parseInt(req.params.id)])
+    .then(function () {
+      res.status(200)
+        .json({
+          status: 'success',
+          message: 'Updated person'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function removePerson(req, res, next) {
+  var person = parseInt(req.params.id);
+  db.result('delete from persons where person = $1', person)
+    .then(function (result) {
+      /* jshint ignore:start */
+      res.status(200)
+        .json({
+          status: 'success',
+          message: `Removed ${result.rowCount} person`
         });
       /* jshint ignore:end */
     })

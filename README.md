@@ -61,13 +61,15 @@ sudo systemctl restart postgresql
 npm install
 
 # Initialize PostgreSQL DB
-psql -f TheHybridSpace.sql
+psql -f initdb.sql
 
 #Start service
 npm start
 ```
 
 ## API Calls:
+
+### Evaluations:
 As of now, the API is split in two sections, /evaluation and /evaluation**s**.
 
 /evaluation presents the evaluation of a spesific unique identifier for all evaluations. Every new evaluation gets such an id, shown as "evalid" in the returned JSON string.
@@ -116,4 +118,46 @@ Delete evaluation:
 curl -X DELETE http://127.0.0.1:3000/api/evaluation/1
 
 {"status":"success","message":"Removed 1 evaluation"}
+```
+
+### Persons
+We can modify the people in the database through `/api/persons`. We also have `/api/person/:id` to access a spesific person.
+
+These function similar to the evaluation API calls, so the similar curl statements can be used against these
+
+Here is a brief overview:
+
+Get all persons:
+```
+$ curl http://127.0.0.1:3000/api/persons
+{"status":"success","data":[{"person":1,"team":"Lag 1","collection":"Ving68"}],"message":"Retrieved ALL persons"}
+```
+Get spesific person, via their ID number:
+```
+# Getting person 1
+$ curl http://127.0.0.1:3000/api/person/1
+{"status":"success","data":[{"person":1,"team":"Lag 1","collection":"Ving68"}],"message":"Retrieved ALL persons"}
+```
+Create an a new person in the database:
+```
+$ curl --data "person=4&team=ST5&collection=USAF" http://127.0.0.1:3000/api/person
+{"status":"success","message":"Inserted one person"}
+```
+
+Updating information on an existing person:
+```
+$ curl -X PUT --data "team=ST6&collection=Marines" http://127.0.0.1:3000/api/person/1
+{"status":"success","message":"Updated person"}
+```
+Delete person:
+```
+$ curl -X DELETE http://127.0.0.1:3000/api/person/4
+{"status":"success","message":"Removed 1 person"}
+```
+```
+router.get('/persons', db.getAllPersons);
+router.get('/person/:id', db.getSinglePerson);
+router.post('/person', db.createPerson);
+router.put('/person/:id', db.updatePerson);
+router.delete('/person/:id', db.removePerson);
 ```
