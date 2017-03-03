@@ -23,7 +23,8 @@ Create user
 ```
 sudo su - postgres
 $ createuser yourusername
-$ createdb owner=youusername yourusername
+exit
+$ createdb
 ```
 
 Give CREATEDB permission:
@@ -60,7 +61,7 @@ sudo systemctl restart postgresql
 npm install
 
 # Initialize PostgreSQL DB
-psql -h localhost -U postgres -f TheHybridSpace.sql
+psql -f TheHybridSpace.sql
 
 #Start service
 npm start
