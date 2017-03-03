@@ -39,9 +39,11 @@
 
   <h1 id="title">The Hyper Space - Data collected:</h1>
   <hr>
+  Automatic updates enabled
   <div id="text"><h3>No data recieved</h3></div>
   <div id="table1"></div>
     <script>
+
       function ajax_get(url, callback) {
       xmlhttp = new XMLHttpRequest();
       xmlhttp.onreadystatechange = function() {
@@ -60,22 +62,26 @@
       xmlhttp.open("GET", url, true);
       xmlhttp.send();
       }
+      function updateDiv(){
+        ajax_get('/api/evaluations', function(data) {
+            document.getElementById("title").innerHTML = "The Hyper Space - All data collected:";
+            var html = "<h3>" + data["message"] + "</h3>";
+            var table1 = "";
 
-      ajax_get('/api/evaluations', function(data) {
-          document.getElementById("title").innerHTML = "The Hyper Space - Data collected:";
-          var html = "<h3>" + data["message"] + "</h3>";
-          var table1 = "";
+            html += "</ul>";
+            table1 += "<table><th>Eval ID</th><th>Person ID</th><th>X</th><th>Y</th><th>Slider1</th><th>Slider2</th><th>Comment</th>";
+            for (var i=0; i < data["data"].length; i++) {
+              table1 += '<tr><td><a href="/api/evaluation/' + data["data"][i]["evalid"] + '">'+ data["data"][i]["evalid"] + "</a></td>" + "<td>" + data["data"][i]["person"] + "</td><td>" + data["data"][i]["x"] + "</td><td>" + data["data"][i]["y"] + "</td><td>" + data["data"][i]["slider1"] + "</td><td>" + data["data"][i]["slider2"] + "</td><td>" + data["data"][i]["comment"] + "</td></tr>";
+            }
+            table1 += "</table>"
 
-          html += "</ul>";
-          table1 += "<table><th>Eval ID</th><th>Person ID</th><th>X</th><th>Y</th><th>Slider1</th><th>Slider2</th><th>Comment</th>";
-          for (var i=0; i < data["data"].length; i++) {
-            table1 += '<tr><td><a href="/api/evaluation/' + data["data"][i]["evalid"] + '">'+ data["data"][i]["evalid"] + "</a></td>" + "<td>" + data["data"][i]["person"] + "</td><td>" + data["data"][i]["x"] + "</td><td>" + data["data"][i]["y"] + "</td><td>" + data["data"][i]["slider1"] + "</td><td>" + data["data"][i]["slider2"] + "</td><td>" + data["data"][i]["comment"] + "</td></tr>";
-          }
-          table1 += "</table>"
-
-          document.getElementById("text").innerHTML = html;
-          document.getElementById("table1").innerHTML =table1
-      });
+            document.getElementById("text").innerHTML = html;
+            document.getElementById("table1").innerHTML =table1
+        });
+      }
+      updateDiv();
+      setInterval(updateDiv, 5000);
+      //setInterval("ajax_get", 10000):
     </script>
 
 </body>
