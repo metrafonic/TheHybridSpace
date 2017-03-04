@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+<head>
+
+    <title>How to Parse a JSON file using jQuery</title>
+
+    <style>
+        html {
+            display: table;
+            margin: auto;
+        }
+        body{
+            text-align: left;
+            font-family: arial;
+            width: 800px;
+        }
+        h2, h1{
+            text-align: center;
+        }
+
+        .button{
+            margin:20px;
+            font-size:16px;
+            font-weight: bold;
+            padding:5px 10px;
+        }
+        .footer{
+            text-align: center;
+        }
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+          }
+    </style>
+
+
+</head>
+<body>
+
+  <h1 id="title">The Hyper Space - Data collected:</h1>
+  <hr>
+  <h2>Evaluations</h3>
+  <div id="text1"><h3>No data recieved</h3></div>
+  <div id="table1"></div>
+  Automatic updates enabled
+  <h2>Persons</h3>
+  <div id="text2"><h3>No data recieved</h3></div>
+  <div id="table2"></div>
+  Automatic updates enabled
+  <hr>
+  <div class="footer">Made by Mathias Hedberg</div>
+    <script>
+
+      function ajax_get(url, callback) {
+      xmlhttp = new XMLHttpRequest();
+      xmlhttp.onreadystatechange = function() {
+          if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+              console.log('responseText:' + xmlhttp.responseText);
+              try {
+                  var data = JSON.parse(xmlhttp.responseText);
+              } catch(err) {
+                  console.log(err.message + " in " + xmlhttp.responseText);
+                  return;
+              }
+              callback(data);
+          }
+      };
+
+      xmlhttp.open("GET", url, true);
+      xmlhttp.send();
+      }
+      function updateEvaluations(){
+        ajax_get('/api/evaluations', function(data) {
+            document.getElementById("title").innerHTML = "The Hyper Space - All data collected:";
+            var html1 = "<h3>" + data["message"] + "</h3>";
+            var table1 = "";
+
+            html1 += "</ul>";
+            table1 += "<table><th>ID</th><th>Person</th><th>Team</th><th>Group</th><th>X</th><th>Y</th><th>Slider1</th><th>Slider2</th><th>Comment</th>";
+            for (var i=0; i < data["data"].length; i++) {
+              table1 += "<tr><td><a href='/api/evaluation/" + data["data"][i]["evalid"] + "'>" + data["data"][i]["evalid"] + "</a></td><td><a href='/api/evaluations/" + data["data"][i]["person"] + "'>" + data["data"][i]["person"] + "</a></td><td>" + data["data"][i]["team"] + "</td><td>" + data["data"][i]["collection"] + "</td><td>" + data["data"][i]["x"] + "</td><td>" + data["data"][i]["y"] + "</td><td>" + data["data"][i]["slider1"] + "</td><td>" + data["data"][i]["slider2"] + "</td><td>" + data["data"][i]["comment"] + "</td></tr>";
+            }
+            table1 += "</table>"
+
+            document.getElementById("text1").innerHTML = html1;
+            document.getElementById("table1").innerHTML =table1
+        });
+      }
+      updateEvaluations();
+      setInterval(updateEvaluations, 5000);
+    </script>
+
+</body>
+</html>
