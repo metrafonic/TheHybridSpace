@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<title>The Hybrid Space</title>
+<head>
+<style>
+		html {
+				display: table;
+				margin: auto;
+		}
+		body{
+				text-align: left;
+				font-family: arial;
+				width: 1100px;
+		}
+		h1{
+				text-align: center;
+		}
+		h2{
+				text-align: left;
+		}
+
+		.button{
+				margin:20px;
+				font-size:16px;
+				font-weight: bold;
+				padding:5px 10px;
+		}
+		.footer{
+				text-align: center;
+		}
+		table {
+				font-family: arial, sans-serif;
+				border-collapse: collapse;
+				width: 100%;
+		}
+
+		td, th {
+				border: 1px solid #dddddd;
+				text-align: left;
+				padding: 8px;
+		}
+
+		tr:nth-child(even) {
+				background-color: #dddddd;
+			}
+</style>
+
+
+</head>
+<body>
+	<h1 id="title">The Hyper Space</h1>
+  <hr>
+	<center>
+		<a href="/data/"><b>Data Home</b></a> |
+		<a href="/">Add Evaluation</a> |
+		<a href="/about">About</a> |
+		<a href="/help">Help</a>
+	</center>
+	<hr>
+  <h2>Evaluations</h3>
+  <p id="text1">No data recieved</p>
+  <table id="table1"></table>
+  <p>Automatic updates enabled</p>
+  <h2>Persons</h3>
+  <p id="text2">No data recieved</p>
+  <table id="table2"></table>
+  Automatic updates enabled
+  <hr>
+  <div class="footer">Made by Mathias Hedberg</div>
+
+<script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+<script>
+function deleteEvaluation(k){
+	$.ajax({
+	    url: '/api/evaluation/' + k,
+	    type: 'DELETE',
+	    success: function(result) {
+	        updateEvaluations();
+	    }
+	});
+}
+
+function updateEvaluations(){
+	$.when(
+		$.getJSON('/api/evaluations'),
+		$.getJSON('/api/persons')
+	).done(function(a, b) {
+		$("#table1").html("");
+		$("#table2").html("");
+		$("#text1").html("<b>Status: </b>" + a[0].message);
+		$("#text2").html("<b>Status: </b>" + b[0].message);
+
+		$("#table1").append("<tr></tr>");
+		$.each(a[0].data[1], function(key, value){
+	    $("#table1 tbody tr:last").append("<th>" + key + "</th>" );
+		});
+
+		$.each(a[0].data, function(i, field){
+			$("#table1").append("<tr></tr>");
+	  	$.each(field, function(i, field){
+				$("#table1 tbody tr:last").append("<td>" + field + "</td>");
+			});
+			$("#table1 tbody tr:last").append("<td><a onclick='deleteEvaluation(" + field.evalid + ")' href='javascript:void(0);'>Delete</a></td>");
+	  });
+
+
+		$("#table2").append("<tr></tr>");
+		$.each(b[0].data[1], function(key, value){
+	    $("#table2 tbody tr:last").append("<th>" + key + "</th>" );
+		});
+		$.each(b[0].data, function(i, field){
+			$("#table2").append("<tr></tr>");
+	  	$.each(field, function(i, field){
+				$("#table2 tbody tr:last").append("<td>" + field + "</td>");
+			});
+	  });
+	});
+}
+updateEvaluations();
+setInterval(updateEvaluations, 10000);
+</script>
+</body>
+</html>
