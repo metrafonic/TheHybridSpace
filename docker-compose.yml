@@ -17,4 +17,3 @@ services:
     - DB_PASS=postgres
     volumes:
       - ./initdb/initdb.sql:/docker-entrypoint-initdb.d/init.sql
-

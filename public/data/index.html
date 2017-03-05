@@ -168,7 +168,7 @@ function setTable(a, table, text, eventtext, eventfunction, eventkey, page){
 	var pageend=pagestart+perpage;
 		$(table).html("");
 		$(text).html("<b>Status: </b>" + a[0].message);
-		if (a[0].data.length>=(page*perpage)){
+		if (a[0].data.length>=(page*perpage) && a[0].data.length>0){
 			$(table).append("<tr></tr>");
 			$.each(a[0].data[0], function(key, value){
 		    $(table + " tbody tr:last").append("<th>" + key + "</th>" );
@@ -193,7 +193,7 @@ function setTable(a, table, text, eventtext, eventfunction, eventkey, page){
 					}
 				}
 				item++;
-				
+
 		  });
 		}else{
 			$(table).append("<tr><td><center>No data</center></td></tr>" );
