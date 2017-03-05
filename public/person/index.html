@@ -26,7 +26,6 @@
     <text id="collection"></text><br>
 
     <script>
-        completedata = [];
 
         function updateData() {
             $.when(
@@ -38,7 +37,7 @@
                 } catch (err) {
                     console.log(err.message);
                 }
-                console.log(a[0].data);
+                //console.log(a[0].data);
                 $("#person").html("<b>Person: </b>" + a[0].data.person);
                 $("#team").html("<b>Team: </b>" + a[0].data.team);
                 $("#collection").html("<b>Group: </b>" + a[0].data.collection);
@@ -48,32 +47,21 @@
         }
 
         function parseData(data) {
-            //console.log(data.data);
-            var jsondata = new Object();
-            jsondata.name = "All data";
-            jsondata.color = 'rgba(223, 83, 83, .5)';
-
-            plotdata = [];
+            plotdata = [[],[]];
             i = 0;
             $.each(data.data, function(key, value) {
-                //console.log(value.x, i);
-                plotdata[i] = [value.x, value.y];
+                plotdata[[value.date],[i]] = [value.x, value.y, value.date];
                 i++;
             });
+            console.log(plotdata);
 
 
-            jsondata.data = plotdata;
 
-            completedata[0] = jsondata;
             showGraph(plotdata);
-            //console.log(plotdata);
         }
 
 
         function showGraph(data) {
-
-
-
             var options = {
 
                 plotOptions: {
@@ -108,10 +96,13 @@
                         _text: null
                     }
                 },
-                series: [{}]
+                series: []
             };
 
+            options.series[0] = {name: "Dag 1"};
             options.series[0].data = data;
+            options.series[1] = {name: "Dag 2"};
+            options.series[1].data = data;
             var chart = new Highcharts.Chart(options);
 
 
