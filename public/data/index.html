@@ -1,55 +1,63 @@
 <!DOCTYPE html>
 <html>
 <title>The Hybrid Space</title>
+
 <head>
-<style>
+	<style>
 		html {
-				display: table;
-				margin: auto;
-		}
-		body{
-				text-align: left;
-				font-family: arial;
-				width: 1100px;
-		}
-		h1{
-				text-align: center;
-		}
-		h2{
-				text-align: left;
+			display: table;
+			margin: auto;
 		}
 
-		.button{
-				margin:20px;
-				font-size:16px;
-				font-weight: bold;
-				padding:5px 10px;
+		body {
+			text-align: left;
+			font-family: arial;
+			width: 1100px;
 		}
-		.footer{
-				text-align: center;
+
+		h1 {
+			text-align: center;
 		}
+
+		h2 {
+			text-align: left;
+		}
+
+		.button {
+			margin: 20px;
+			font-size: 16px;
+			font-weight: bold;
+			padding: 5px 10px;
+		}
+
+		.footer {
+			text-align: center;
+		}
+
 		table {
-				font-family: arial, sans-serif;
-				border-collapse: collapse;
-				width: 100%;
+			font-family: arial, sans-serif;
+			border-collapse: collapse;
+			width: 100%;
 		}
 
-		td, th {
-				border: 1px solid #dddddd;
-				text-align: left;
-				padding: 8px;
+		td,
+		th {
+			border: 1px solid #dddddd;
+			text-align: left;
+			padding: 8px;
 		}
 
 		tr:nth-child(even) {
-				background-color: #dddddd;
-			}
-</style>
+			background-color: #dddddd;
+		}
+	</style>
 
 
 </head>
+
 <body>
 	<h1 id="title">The Hyper Space</h1>
-  <hr>
+	<hr>
 	<center>
 		<a href="/data/"><b>Data Home</b></a> |
 		<a href="/">Add Evaluation</a> |
@@ -57,67 +65,144 @@
 		<a href="/help">Help</a>
 	</center>
 	<hr>
-  <h2>Evaluations</h3>
+	<h2>Evaluations</h3>
   <p id="text1">No data recieved</p>
+	<button id="previouspage" onclick="previousPage(0)">Previous</button>
+	<text>Page: </text><text id=pagenumber>1</text>
+	<button id="nextpage" onclick="nextPage(0)">Next</button>
   <table id="table1"></table>
+	<button id="previouspage" onclick="previousPage(0)">Previous</button>
+	<button id="nextpage" onclick="nextPage(0)">Next</button>
   <p>Automatic updates enabled</p>
   <h2>Persons</h3>
   <p id="text2">No data recieved</p>
+	<button id="previouspage" onclick="previousPage(1)">Previous</button>
+	<text>Page: </text><text id=pagenumber2>1</text>
+	<button id="nextpage" onclick="nextPage(1)">Next</button>
   <table id="table2"></table>
-  Automatic updates enabled
+  <p>Automatic updates enabled<p>
   <hr>
   <div class="footer">Made by Mathias Hedberg</div>
 
 <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
 <script>
+
+var page= 0;
+var page2=0;
+function nextPage(x){
+	switch (x) {
+		case 0:
+			page=page+1;
+			$("#pagenumber").html(page+1);
+			break;
+		case 1:
+			page2=page2+1;
+			$("#pagenumber2").html(page2+1);
+			break;
+		default:
+
+	}
+	updateData();
+}
+function previousPage(x){
+		switch (x) {
+			case 0:
+				if (page==0){break;}
+				page=page-1;
+				$("#pagenumber").html(page+1);
+				break;
+			case 1:
+				if (page2==0){break;}
+				page2=page2-1;
+				$("#pagenumber2").html(page2+1);
+				break;
+			default:
+
+		}
+		updateData();
+}
+
 function deleteEvaluation(k){
 	$.ajax({
-	    url: '/api/evaluation/' + k,
+	    url: "/api/evaluation/" + k,
 	    type: 'DELETE',
 	    success: function(result) {
-	        updateEvaluations();
+	        updateData();
 	    }
 	});
 }
 
-function updateEvaluations(){
+
+
+
+function editPerson(person){
+	var URL = "/person/?id=";
+	window.open(URL + person, "popupWindow", "width=600,height=600,scrollbars=yes");
+}
+
+function updateData(){
 	$.when(
 		$.getJSON('/api/evaluations'),
 		$.getJSON('/api/persons')
-	).done(function(a, b) {
-		$("#table1").html("");
-		$("#table2").html("");
-		$("#text1").html("<b>Status: </b>" + a[0].message);
-		$("#text2").html("<b>Status: </b>" + b[0].message);
+	).done(function(a, b){
+		try {
+		    setTable(a,"#table1", "#text1", "Delete", "deleteEvaluation", "evalid", page);
+		}
+		catch(err) {
+		    console.log(err.message);
+				$("#text1").html("<b>Status: </b> ERROR: " + err.message);
+		}
+		try {
+		    setTable(b,"#table2", "#text2", "Edit", "editPerson", "person", page2);
+		}
+		catch(err) {
+		    console.log(err.message);
+				$("#text2").html("<b>Status: </b> ERROR:" + err.message);
+		}
 
-		$("#table1").append("<tr></tr>");
-		$.each(a[0].data[1], function(key, value){
-	    $("#table1 tbody tr:last").append("<th>" + key + "</th>" );
-		});
-
-		$.each(a[0].data, function(i, field){
-			$("#table1").append("<tr></tr>");
-	  	$.each(field, function(i, field){
-				$("#table1 tbody tr:last").append("<td>" + field + "</td>");
-			});
-			$("#table1 tbody tr:last").append("<td><a onclick='deleteEvaluation(" + field.evalid + ")' href='javascript:void(0);'>Delete</a></td>");
-	  });
-
-
-		$("#table2").append("<tr></tr>");
-		$.each(b[0].data[1], function(key, value){
-	    $("#table2 tbody tr:last").append("<th>" + key + "</th>" );
-		});
-		$.each(b[0].data, function(i, field){
-			$("#table2").append("<tr></tr>");
-	  	$.each(field, function(i, field){
-				$("#table2 tbody tr:last").append("<td>" + field + "</td>");
-			});
-	  });
 	});
 }
-updateEvaluations();
-setInterval(updateEvaluations, 10000);
+function setTable(a, table, text, eventtext, eventfunction, eventkey, page){
+	var perpage=15;
+	var pagestart=page*perpage;
+	var pageend=pagestart+perpage;
+		$(table).html("");
+		$(text).html("<b>Status: </b>" + a[0].message);
+		if (a[0].data.length>=(page*perpage)){
+			$(table).append("<tr></tr>");
+			$.each(a[0].data[0], function(key, value){
+		    $(table + " tbody tr:last").append("<th>" + key + "</th>" );
+			});
+
+			var item=0;
+			$.each(a[0].data, function(i, field){
+				if (item>=pagestart && item<pageend){
+					$(table).append("<tr></tr>");
+					var eventitem;
+					var eventable=0;
+			  	$.each(field, function(i, field){
+						if (i == eventkey){
+							eventitem=field;
+							eventable=1;
+						}
+						$(table + " tbody tr:last").append("<td>" + field + "</td>");
+					});
+					if (eventable){
+						$(table + " tbody tr:last")
+						.append("<td><a onclick='" + eventfunction + "(" + eventitem + ")' href='javascript:void(0);'>" + eventtext + "</a></td>");
+					}
+				}
+				item++;
+				
+		  });
+		}else{
+			$(table).append("<tr><td><center>No data</center></td></tr>" );
+		}
+
+}
+
+updateData();
+setInterval(updateData, 10000);
 </script>
 </body>
 </html>

@@ -6,7 +6,7 @@ var options = {
 };
 
 var pgp = require('pg-promise')(options);
-var connectionString = 'postgres://localhost:5432/thehybridspace';
+var connectionString = process.env.DATABASE_URL || "postgres://127.0.0.1:5432/thehybridspace";
 var db = pgp(connectionString);
 
 // add query functions
