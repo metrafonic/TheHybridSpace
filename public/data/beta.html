@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SB Admin - Bootstrap Admin Template</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="/stylesheets/sb-admin.css" rel="stylesheet">
+
+</head>
+<body>
+  <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+  <script>
+
+  var page= 0;
+  var page2=0;
+  function nextPage(x){
+  	switch (x) {
+  		case 0:
+  				console.log("working");
+  				page=page+1;
+  				$("#pagenumber").html(page+1);
+  				break;
+
+  		case 1:
+  			page2=page2+1;
+  			$("#pagenumber2").html(page2+1);
+  			break;
+  		default:
+
+  	}
+  	updateData();
+  }
+  function previousPage(x){
+  		switch (x) {
+  			case 0:
+  				if (page==0){break;}
+  				page=page-1;
+  				$("#pagenumber").html(page+1);
+  				break;
+  			case 1:
+  				if (page2==0){break;}
+  				page2=page2-1;
+  				$("#pagenumber2").html(page2+1);
+  				break;
+  			default:
+
+  		}
+  		updateData();
+  }
+
+  function deleteEvaluation(k){
+  	$.ajax({
+  	    url: "/api/evaluation/" + k,
+  	    type: 'DELETE',
+  	    success: function(result) {
+  	        updateData();
+  	    }
+  	});
+  }
+
+
+
+
+  function editPerson(person){
+  	var URL = "/person/?id=";
+  	window.open(URL + person, "popupWindow", "width=600,height=900,scrollbars=yes");
+  }
+
+  function updateData(){
+  	$.when(
+  		$.getJSON('/api/evaluations'),
+  		$.getJSON('/api/persons')
+  	).done(function(a, b){
+  		try {
+  		    setTable(a,"#table1", "#text1", "Delete", "deleteEvaluation", "evalid", page, "nextpage", "previouspage");
+  		}
+  		catch(err) {
+  		    console.log(err.message);
+  				$("#text1").html("<b>Status: </b> ERROR: " + err.message);
+  		}
+
+
+  	});
+  }
+  function setTable(a, table, text, eventtext, eventfunction, eventkey, page, nextButton, previousButton){
+  	var perpage=15;
+  	var pagestart=page*perpage;
+  	var pageend=pagestart+perpage;
+  		$(table).html("");
+  		$(text).html("<b>Status: </b>" + a[0].message);
+  		if (a[0].data.length>pageend){
+  			document.getElementById(nextButton).disabled = false;
+  		}else{
+  			document.getElementById(nextButton).disabled = true;
+  		}
+  		if (page==0){
+  			document.getElementById(previousButton).disabled = true;
+  		}else{
+  			document.getElementById(previousButton).disabled = false;
+  		}
+  		if (a[0].data.length>=(page*perpage) && a[0].data.length>0){
+  			$(table).append("<tr></tr>");
+  			$.each(a[0].data[0], function(key, value){
+  		    $(table + " tbody tr:last").append("<th>" + key + "</th>" );
+  			});
+
+  			var item=0;
+  			$.each(a[0].data, function(i, field){
+  				if (item>=pagestart && item<pageend){
+  					$(table).append("<tr></tr>");
+  					var eventitem;
+  					var eventable=0;
+  			  	$.each(field, function(i, field){
+  						if (i == eventkey){
+  							eventitem=field;
+  							eventable=1;
+  						}
+  						$(table + " tbody tr:last").append("<td>" + field + "</td>");
+  					});
+  					if (eventable){
+  						$(table + " tbody tr:last")
+  						.append("<td><a onclick='" + eventfunction + "(" + eventitem + ")' href='javascript:void(0);'>" + eventtext + "</a></td>");
+  					}
+  				}
+  				item++;
+
+  		  });
+        $("#evaluationnumbers").html(item);
+  		}else{
+  			$(table).append("<tr><td><center>No data</center></td></tr>" );
+  		}
+
+  }
+
+  updateData();
+  setInterval(updateData, 10000);
+  </script>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">SB Admin</a>
+            </div>
+            <!-- Top Menu Items -->
+            <ul class="nav navbar-right top-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> <b class="caret"></b></a>
+                    <ul class="dropdown-menu message-dropdown">
+                        <li class="message-preview">
+                            <a href="#">
+                                <div class="media">
+                                    <span class="pull-left">
+                                        <img class="media-object" src="http://placehold.it/50x50" alt="">
+                                    </span>
+                                    <div class="media-body">
+                                        <h5 class="media-heading"><strong>John Smith</strong>
+                                        </h5>
+                                        <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
+                                        <p>Lorem ipsum dolor sit amet, consectetur...</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="message-preview">
+                            <a href="#">
+                                <div class="media">
+                                    <span class="pull-left">
+                                        <img class="media-object" src="http://placehold.it/50x50" alt="">
+                                    </span>
+                                    <div class="media-body">
+                                        <h5 class="media-heading"><strong>John Smith</strong>
+                                        </h5>
+                                        <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
+                                        <p>Lorem ipsum dolor sit amet, consectetur...</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="message-preview">
+                            <a href="#">
+                                <div class="media">
+                                    <span class="pull-left">
+                                        <img class="media-object" src="http://placehold.it/50x50" alt="">
+                                    </span>
+                                    <div class="media-body">
+                                        <h5 class="media-heading"><strong>John Smith</strong>
+                                        </h5>
+                                        <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
+                                        <p>Lorem ipsum dolor sit amet, consectetur...</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="message-footer">
+                            <a href="#">Read All New Messages</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell"></i> <b class="caret"></b></a>
+                    <ul class="dropdown-menu alert-dropdown">
+                        <li>
+                            <a href="#">Alert Name <span class="label label-default">Alert Badge</span></a>
+                        </li>
+                        <li>
+                            <a href="#">Alert Name <span class="label label-primary">Alert Badge</span></a>
+                        </li>
+                        <li>
+                            <a href="#">Alert Name <span class="label label-success">Alert Badge</span></a>
+                        </li>
+                        <li>
+                            <a href="#">Alert Name <span class="label label-info">Alert Badge</span></a>
+                        </li>
+                        <li>
+                            <a href="#">Alert Name <span class="label label-warning">Alert Badge</span></a>
+                        </li>
+                        <li>
+                            <a href="#">Alert Name <span class="label label-danger">Alert Badge</span></a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">View All</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> John Smith <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav side-nav">
+                    <li class="active">
+                        <a href="index.html"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="charts.html"><i class="fa fa-fw fa-bar-chart-o"></i> Charts</a>
+                    </li>
+                    <li>
+                        <a href="tables.html"><i class="fa fa-fw fa-table"></i> Tables</a>
+                    </li>
+                    <li>
+                        <a href="forms.html"><i class="fa fa-fw fa-edit"></i> Forms</a>
+                    </li>
+                    <li>
+                        <a href="bootstrap-elements.html"><i class="fa fa-fw fa-desktop"></i> Bootstrap Elements</a>
+                    </li>
+                    <li>
+                        <a href="bootstrap-grid.html"><i class="fa fa-fw fa-wrench"></i> Bootstrap Grid</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> Dropdown <i class="fa fa-fw fa-caret-down"></i></a>
+                        <ul id="demo" class="collapse">
+                            <li>
+                                <a href="#">Dropdown Item</a>
+                            </li>
+                            <li>
+                                <a href="#">Dropdown Item</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="blank-page.html"><i class="fa fa-fw fa-file"></i> Blank Page</a>
+                    </li>
+                    <li>
+                        <a href="index-rtl.html"><i class="fa fa-fw fa-dashboard"></i> RTL Dashboard</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </nav>
+
+        <div id="page-wrapper">
+
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            Evaluations <small>Live</small>
+                        </h1>
+                        <ol class="breadcrumb">
+                            <li class="active">
+                                <i class="fa fa-dashboard"></i> Overview
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                <!-- /.row -->
+
+
+
+                <div class="row">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <i class="fa fa-comments fa-5x"></i>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <div class="huge" id="evaluationnumbers">0</div>
+                                        <div>Registered evaluations</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="#">
+                                <div class="panel-footer">
+                                    <span class="pull-left">View Details</span>
+                                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <!-- /.row -->
+
+
+                <div class="row">
+                    <div class="col-lg-4">
+
+                    </div>
+
+                    <div class="col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-money fa-fw"></i>All Evaluations</h3>
+
+                            </div>
+
+                            <div class="panel-body">
+
+
+                                <div class="table-responsive">
+
+
+                                    <table class="table table-bordered table-hover table-striped" id="table1">
+
+                                    </table>
+
+                                </div>
+                                <button id="previouspage" onclick="previousPage(0)">Previous</button>
+                                <button id="nextpage" onclick="nextPage(0)">Next</button>
+                                <text>Page: </text><text id=pagenumber>1</text>
+                                <div class="text-right">
+                                    <p id="text1">No data recieved</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.row -->
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/javascripts/bootstrap.min.js"></script>
+
+
+</body>
+
+</html>
