@@ -71,14 +71,12 @@
 	<text>Page: </text><text id=pagenumber>1</text>
 	<button id="nextpage" onclick="nextPage(0)">Next</button>
   <table id="table1"></table>
-	<button id="previouspage" onclick="previousPage(0)">Previous</button>
-	<button id="nextpage" onclick="nextPage(0)">Next</button>
   <p>Automatic updates enabled</p>
   <h2>Persons</h3>
   <p id="text2">No data recieved</p>
-	<button id="previouspage" onclick="previousPage(1)">Previous</button>
+	<button id="previouspage2" onclick="previousPage(1)">Previous</button>
 	<text>Page: </text><text id=pagenumber2>1</text>
-	<button id="nextpage" onclick="nextPage(1)">Next</button>
+	<button id="nextpage2" onclick="nextPage(1)">Next</button>
   <table id="table2"></table>
   <p>Automatic updates enabled<p>
   <hr>
@@ -92,9 +90,11 @@ var page2=0;
 function nextPage(x){
 	switch (x) {
 		case 0:
-			page=page+1;
-			$("#pagenumber").html(page+1);
-			break;
+				console.log("working");
+				page=page+1;
+				$("#pagenumber").html(page+1);
+				break;
+
 		case 1:
 			page2=page2+1;
 			$("#pagenumber2").html(page2+1);
@@ -137,7 +137,7 @@ function deleteEvaluation(k){
 
 function editPerson(person){
 	var URL = "/person/?id=";
-	window.open(URL + person, "popupWindow", "width=600,height=600,scrollbars=yes");
+	window.open(URL + person, "popupWindow", "width=580,height=900,scrollbars=yes");
 }
 
 function updateData(){
@@ -146,14 +146,14 @@ function updateData(){
 		$.getJSON('/api/persons')
 	).done(function(a, b){
 		try {
-		    setTable(a,"#table1", "#text1", "Delete", "deleteEvaluation", "evalid", page);
+		    setTable(a,"#table1", "#text1", "Delete", "deleteEvaluation", "evalid", page, "nextpage", "previouspage");
 		}
 		catch(err) {
 		    console.log(err.message);
 				$("#text1").html("<b>Status: </b> ERROR: " + err.message);
 		}
 		try {
-		    setTable(b,"#table2", "#text2", "Edit", "editPerson", "person", page2);
+		    setTable(b,"#table2", "#text2", "Edit", "editPerson", "person", page2, "nextpage2", "previouspage2");
 		}
 		catch(err) {
 		    console.log(err.message);
@@ -162,12 +162,22 @@ function updateData(){
 
 	});
 }
-function setTable(a, table, text, eventtext, eventfunction, eventkey, page){
+function setTable(a, table, text, eventtext, eventfunction, eventkey, page, nextButton, previousButton){
 	var perpage=15;
 	var pagestart=page*perpage;
 	var pageend=pagestart+perpage;
 		$(table).html("");
 		$(text).html("<b>Status: </b>" + a[0].message);
+		if (a[0].data.length>pageend){
+			document.getElementById(nextButton).disabled = false;
+		}else{
+			document.getElementById(nextButton).disabled = true;
+		}
+		if (page==0){
+			document.getElementById(previousButton).disabled = true;
+		}else{
+			document.getElementById(previousButton).disabled = false;
+		}
 		if (a[0].data.length>=(page*perpage) && a[0].data.length>0){
 			$(table).append("<tr></tr>");
 			$.each(a[0].data[0], function(key, value){

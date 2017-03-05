@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+
+<html>
+<title>The Hybrid Space</title>
+
+<head>
+    <script src="/javascripts/highcharts.js"></script>
+    <script src="/javascripts/urltools.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+</head>
+
+<body>
+    <div id="container" style="min-width: 250px; height: 500px; max-width: 500px; margin: 0 auto"></div>
+
+    <script>
+        completedata = [];
+
+        function updateData() {
+            $.when(
+                $.getJSON('/api/person/' + getUrlParameter('id')),
+                $.getJSON('/api/evaluations/' + getUrlParameter('id'))
+            ).done(function(a, b) {
+                try {
+                    parseData(b[0]);
+                } catch (err) {
+                    console.log(err.message);
+                }
+
+
+            });
+        }
+
+        function parseData(data) {
+            console.log(data.data);
+            var jsondata = new Object();
+            jsondata.name = "All data";
+            jsondata.color = 'rgba(223, 83, 83, .5)';
+
+            plotdata = [];
+            i = 0;
+            $.each(data.data, function(key, value) {
+                console.log(value.x, i);
+                plotdata[i] = [value.x, value.y];
+                i++;
+            });
+
+
+            jsondata.data = plotdata;
+
+            completedata[0] = jsondata;
+            showGraph(plotdata);
+            console.log(plotdata);
+        }
+
+
+        function showGraph(data) {
+
+            var options = {
+
+                chart: {
+                    renderTo: 'container',
+                    type: 'scatter'
+
+                },
+                title: {
+                    text: 'Data for person ' + getUrlParameter('id')
+                },
+                xAxis: {
+                    title: {
+                        enabled: true,
+                        text: ''
+                    },
+                    max: 150,
+                    min: -150,
+                    startOnTick: true,
+                    endOnTick: true,
+                    showLastLabel: true
+                },
+                yAxis: {
+                    title: {
+                        text: ''
+                    },
+                    max: 150,
+                    min: -150
+                },
+                series: [{}]
+            };
+
+            options.series[0].data = data;
+            var chart = new Highcharts.Chart(options);
+
+
+        }
+
+        updateData();
+        setInterval(updateData, 5000);
+    </script>
+</body>
+
+</html>
