@@ -21,6 +21,9 @@
 
 <body>
     <div id="container"></div>
+    <text id="person"></text><br>
+    <text id="team"></text><br>
+    <text id="collection"></text><br>
 
     <script>
         completedata = [];
@@ -35,6 +38,10 @@
                 } catch (err) {
                     console.log(err.message);
                 }
+                console.log(a[0].data);
+                $("#person").html("<b>Person: </b>" + a[0].data.person);
+                $("#team").html("<b>Team: </b>" + a[0].data.team);
+                $("#collection").html("<b>Group: </b>" + a[0].data.collection);
 
 
             });
