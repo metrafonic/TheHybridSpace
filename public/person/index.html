@@ -47,23 +47,16 @@
         }
 
         function parseData(data) {
-            plotdata = [];
             datedata= {};
             i = 0;
             $.each(data.data, function(key, value) {
-                plotdata[i] = [value.x, value.y, value.date];
-                i++;
-
                 if (!datedata.hasOwnProperty(value.date)){
                   datedata[value.date]=[];
                 }
                 datedata[value.date].push([value.x, value.y]);
+                i++;
             });
-
-
-
-
-            showGraph(plotdata);
+            showGraph(datedata);
         }
 
 
@@ -105,7 +98,7 @@
                 series: []
             };
             i=0;
-            $.each(datedata, function(key, value) {
+            $.each(data, function(key, value) {
                 console.log(key);
                 options.series[i] = {name: key};
                 options.series[i].data = value;
