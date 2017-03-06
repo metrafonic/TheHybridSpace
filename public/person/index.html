@@ -17,11 +17,11 @@
             margin: 0 auto
         }
         #containerslider1 {
-            height: 200px;
+            height: 150px;
             margin: 0 auto
         }
         #containerslider2 {
-            height: 200px;
+            height: 150px;
             margin: 0 auto
         }
     </style>
@@ -57,21 +57,26 @@
         }
 
         function parseData(data) {
-            var time = Date.UTC(2014, 10, 25);
+
             datedata= {};
             slider1data={};
             slider2data={};
             seriesname="All data";
+            datedata[seriesname]=[];
             slider1data[seriesname]=[];
             slider2data[seriesname]=[];
             i = 0;
             $.each(data.data, function(key, value) {
-                if (!datedata.hasOwnProperty(value.date)){
-                  datedata[value.date]=[];
-                }
-                datedata[value.date].push([value.x, value.y]);
-                slider1data[seriesname].push([parseInt(value.time), value.slider1]);
-                slider2data[seriesname].push([parseInt(value.time), value.slider2]);
+
+                //if (!datedata.hasOwnProperty(value.date)){
+                //  datedata[value.date]=[];
+                //}
+                //datedata[value.date].push({x: value.x, y: value.y, time: value.time});
+
+                var date = new Date(value.time);
+                datedata[seriesname].push({x: value.x, y: value.y, time: value.time, comment: value.comment});
+                slider1data[seriesname].push({x:date.getTime(), y:value.slider1, time: value.time, comment: value.comment});
+                slider2data[seriesname].push({x:date.getTime(), y:value.slider2, time: value.time, comment: value.comment});
 
                 i++;
             });
@@ -85,6 +90,11 @@
         function showScatter(data) {
             var options = {
 
+              tooltip: {
+                    formatter: function() {
+                        return 'Time: <b>' + this.point.time + '</b><br>Comment: <b>' + this.point.comment + '</b>';
+                    }
+                },
                 plotOptions: {
                     scatter: {
                         animation: false,
@@ -121,7 +131,7 @@
             };
             i=0;
             $.each(data, function(key, value) {
-                options.series[i] = {name: key};
+                options.series[i] = {name: key, showInLegend: false};
                 options.series[i].data = value;
                 i++;
             });
@@ -133,8 +143,9 @@
             var options = {
 
               tooltip: {
-                    headerFormat: '<b>{series.name}</b><br>',
-                    pointFormat: '{point.x:%H:%M %e. %b}: {point.y:.2f} \%'
+                  formatter: function() {
+                      return 'Time: <b>' + this.point.time + '</b><br>Comment: <b>' + this.point.comment + '</b>';
+                  }
                 },
                 plotOptions: {
                     spline: {
@@ -162,7 +173,7 @@
                   }
                 },
                 title: {
-                    text: title
+                    text: null
                 },
 
 
@@ -170,7 +181,7 @@
             };
             i=0;
             $.each(data, function(key, value) {
-                options.series[i] = {name: key};
+                options.series[i] = {name: key, showInLegend: false};
                 options.series[i].data = value;
                 i++;
             });

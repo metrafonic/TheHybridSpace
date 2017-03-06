@@ -12,8 +12,7 @@ CREATE TABLE persons (
 CREATE TABLE evaluations (
   evalID SERIAL PRIMARY KEY,
   Person INTEGER REFERENCES persons,
-  Time NUMERIC(20) default (extract(epoch from now()) * 1000),
-  Date varchar(8) default to_char(CURRENT_DATE, 'yyyymmdd'),
+  Time timestamp default (now() at time zone 'utc'),
   X INTEGER,
   Y INTEGER,
   Slider1 INTEGER,
