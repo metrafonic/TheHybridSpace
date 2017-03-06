@@ -57,25 +57,28 @@
         }
 
         function parseData(data) {
+            var time = Date.UTC(2014, 10, 25);
             datedata= {};
             slider1data={};
             slider2data={};
+            seriesname="All data";
+            slider1data[seriesname]=[];
+            slider2data[seriesname]=[];
             i = 0;
             $.each(data.data, function(key, value) {
                 if (!datedata.hasOwnProperty(value.date)){
                   datedata[value.date]=[];
-                  slider1data[value.date]=[];
-                  slider2data[value.date]=[];
                 }
                 datedata[value.date].push([value.x, value.y]);
-                slider1data[value.date].push([value.time, value.slider1]);
-                slider2data[value.date].push([value.time, value.slider2]);
+                slider1data[seriesname].push([parseInt(value.time), value.slider1]);
+                slider2data[seriesname].push([parseInt(value.time), value.slider2]);
 
                 i++;
             });
             showScatter(datedata);
             showSlider(slider1data, 'slider1','containerslider1');
             showSlider(slider2data, 'slider2','containerslider2');
+
         }
 
 
@@ -118,37 +121,55 @@
             };
             i=0;
             $.each(data, function(key, value) {
-                console.log(key);
                 options.series[i] = {name: key};
                 options.series[i].data = value;
                 i++;
             });
             var chart = new Highcharts.Chart(options);
+
         }
 
         function showSlider(data, title, element) {
             var options = {
 
+              tooltip: {
+                    headerFormat: '<b>{series.name}</b><br>',
+                    pointFormat: '{point.x:%H:%M %e. %b}: {point.y:.2f} \%'
+                },
                 plotOptions: {
-                    line: {
-                        animation: false,
-                        lineWidth:2
+                    spline: {
+                        marker: {
+                            enabled: true
+                        },
+                        animation: false
                     }
                 },
                 chart: {
                     renderTo: element,
-                    type: 'line',
+                    type: 'spline',
 
+                },
+                xAxis: {
+                    type: 'datetime',
+
+                    title: {
+                        text: 'Time'
+                    }
+                },
+                yAxis: {
+                  title:{
+                    text: '\%'
+                  }
                 },
                 title: {
                     text: title
                 },
 
+
                 series: []
             };
             i=0;
             $.each(data, function(key, value) {
-                console.log(key);
                 options.series[i] = {name: key};
                 options.series[i].data = value;
                 i++;
