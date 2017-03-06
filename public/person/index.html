@@ -16,11 +16,21 @@
             max-width: 580px;
             margin: 0 auto
         }
+        #containerslider1 {
+            height: 200px;
+            margin: 0 auto
+        }
+        #containerslider2 {
+            height: 200px;
+            margin: 0 auto
+        }
     </style>
 </head>
 
 <body>
     <div id="container"></div>
+    <div id="containerslider1"></div>
+    <div id="containerslider2"></div>
     <text id="person"></text><br>
     <text id="team"></text><br>
     <text id="collection"></text><br>
@@ -48,19 +58,28 @@
 
         function parseData(data) {
             datedata= {};
+            slider1data={};
+            slider2data={};
             i = 0;
             $.each(data.data, function(key, value) {
                 if (!datedata.hasOwnProperty(value.date)){
                   datedata[value.date]=[];
+                  slider1data[value.date]=[];
+                  slider2data[value.date]=[];
                 }
                 datedata[value.date].push([value.x, value.y]);
+                slider1data[value.date].push([value.time, value.slider1]);
+                slider2data[value.date].push([value.time, value.slider2]);
+
                 i++;
             });
-            showGraph(datedata);
+            showScatter(datedata);
+            showSlider(slider1data, 'slider1','containerslider1');
+            showSlider(slider2data, 'slider2','containerslider2');
         }
 
 
-        function showGraph(data) {
+        function showScatter(data) {
             var options = {
 
                 plotOptions: {
@@ -95,6 +114,36 @@
                         _text: null
                     }
                 },
+                series: []
+            };
+            i=0;
+            $.each(data, function(key, value) {
+                console.log(key);
+                options.series[i] = {name: key};
+                options.series[i].data = value;
+                i++;
+            });
+            var chart = new Highcharts.Chart(options);
+        }
+
+        function showSlider(data, title, element) {
+            var options = {
+
+                plotOptions: {
+                    line: {
+                        animation: false,
+                        lineWidth:2
+                    }
+                },
+                chart: {
+                    renderTo: element,
+                    type: 'line',
+
+                },
+                title: {
+                    text: title
+                },
+
                 series: []
             };
             i=0;
