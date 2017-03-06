@@ -21,9 +21,35 @@
 <body>
   <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
   <script type="text/javascript" src="/javascripts/table.js"></script>
+  <script src="/javascripts/jquery.form.js"></script>
+  <script src="/javascripts/notify.js"></script>
+  <script>
+      // wait for the DOM to be loaded
+      $(document).ready(function() {
+          // bind 'myForm' and provide a simple callback function
+          $('#dataform').ajaxForm({
+              success: function() {
+                  $.notify("Successfully added data", {
+                      position: "bottom right",
+                      className: "bootstrap"
+                  });
+                  updateData();
+
+              },
+              error: function() {
+                  $.notify("FAILED! Check network & input", {
+                      position: "bottom right",
+                      className: "error"
+                  });
+
+              },
+
+          });
+      });
+  </script>
   <script>
 
-  
+
 
   function deleteEvaluation(k){
   	$.ajax({
@@ -144,6 +170,49 @@
 
                 </div>
                 <!-- /.row -->
+                <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bar-chart-o fa-fw"></i> Add Person
+
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                          <form id="dataform" action="/api/person" method="post" role="form">
+                            <table>
+                              <tr>
+                                <td>
+                                        <div class="form-group">
+                                            <label>ID number</label>
+                                            <input name="person" class="form-control" placeholder="Enter text">
+
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <div class="form-group">
+                                            <label>Team</label>
+                                            <input name="team" class="form-control" placeholder="Enter text">
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <div class="form-group">
+                                            <label>Group</label>
+                                            <input name="collection" class="form-control" placeholder="Enter text">
+                                        </div>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        <button type="submit" class="btn btn-default">Submit Button</button>
+                                        <button type="reset" class="btn btn-default">Reset Button</button>
+                                      </td>
+                                    </tr>
+                                  </table>
+
+                                    </form>
+
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
 
 
                 <div class="row">
@@ -154,7 +223,7 @@
                     <div class="col-lg-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title"><i class="fa fa-money fa-fw"></i>All Evaluations</h3>
+                                <h3 class="panel-title"><i class="fa fa-money fa-fw"></i>All Persons</h3>
 
                             </div>
 
