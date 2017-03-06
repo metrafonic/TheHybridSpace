@@ -8,7 +8,7 @@ function nextPage(x){
 }
 function previousPage(x){
         page=page-1;
-        $("#pagenumber").html(page2+1);
+        $("#pagenumber").html(page+1);
 
     updateData();
 }
