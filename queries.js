@@ -94,8 +94,8 @@ function getPersonEvaluations(req, res, next) {
 }
 
 function getTeamEvaluations(req, res, next) {
-  var team = req.params.team;
-  db.any('select * from evaluations where team = $1', team)
+  var team = req.params.id;
+  db.any('select * from persons INNER JOIN evaluations ON (persons.person = evaluations.person) WHERE team LIKE $1;', team)
     .then(function (data) {
       res.status(200)
         .json({
@@ -110,8 +110,8 @@ function getTeamEvaluations(req, res, next) {
 }
 
 function getCollectionEvaluations(req, res, next) {
-  var collection = req.params.collection;
-  db.any('select * from evaluations where collection = $1', collection)
+  var collection = req.params.id;
+  db.any('select * from persons INNER JOIN evaluations ON (persons.person = evaluations.person) WHERE collection LIKE $1;', collection)
     .then(function (data) {
       res.status(200)
         .json({
