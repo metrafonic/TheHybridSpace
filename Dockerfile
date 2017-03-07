@@ -14,4 +14,4 @@ COPY . /usr/src/app
 
 EXPOSE 3000
 
-CMD git pull; npm install; npm start
+CMD git pull; npm start
