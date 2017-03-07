@@ -1,4 +1,5 @@
 var promise = require('bluebird');
+var async = require('async');
 
 var options = {
   // Initialization Options
@@ -15,6 +16,7 @@ module.exports = {
   getAllEvaluations: getAllEvaluations,
   getPersonEvaluations: getPersonEvaluations,
   getSingleEvaluation: getSingleEvaluation,
+  createSecureEvaluation: createSecureEvaluation,
   createEvaluation: createEvaluation,
   updateEvaluation: updateEvaluation,
   removeEvaluation: removeEvaluation,
@@ -24,6 +26,37 @@ module.exports = {
   updatePerson: updatePerson,
   removePerson: removePerson
 };
+
+function checkAuth(req, res, next, parentnext){
+  //TODO: Check user exists
+  authenticatePerson(req, res, next, parentnext);
+
+}
+
+function authenticatePerson(req, res, next, parentnext){
+  req.body.person = parseInt(req.body.person);
+  db.one('select password from persons where person = $1', req.body.person)
+    .then(function (data){
+
+      if (data.password==req.body.password){
+        next(req, res, parentnext);
+      }else{
+        res.status(403)
+          .json({
+            status: 'forbidden',
+            message: 'wrong password'
+          });
+          return false;
+      }
+    }).catch(function (err) {
+      res.status(500)
+        .json({
+          status: 'error',
+          message: 'User does not exist'
+        });
+      return next(err);
+    });
+}
 
 function getAllEvaluations(req, res, next) {
   db.any('select * from persons INNER JOIN evaluations ON (persons.person = evaluations.person);')
@@ -72,12 +105,20 @@ function getSingleEvaluation(req, res, next) {
     });
 }
 
+
+
+
+function createSecureEvaluation(req, res, next){
+  checkAuth(req, res, createEvaluation, next);
+}
+
 function createEvaluation(req, res, next) {
-  req.body.person = parseInt(req.body.person);
+  console.log("working");
   req.body.x = parseInt(req.body.x);
   req.body.y = parseInt(req.body.y);
   req.body.slider1 = parseInt(req.body.slider1);
   req.body.slider2 = parseInt(req.body.slider2);
+
   db.none('insert into evaluations(person, x, y, slider1, slider2, comment)' +
       'values(${person}, ${x}, ${y}, ${slider1}, ${slider2}, ${comment})',
     req.body)
@@ -89,8 +130,14 @@ function createEvaluation(req, res, next) {
         });
     })
     .catch(function (err) {
+      res.status(500)
+        .json({
+          status: 'error',
+          message: 'Missing plot data'
+        });
       return next(err);
     });
+
 }
 
 function updateEvaluation(req, res, next) {
@@ -159,8 +206,9 @@ function getSinglePerson(req, res, next) {
 
 function createPerson(req, res, next) {
   req.body.person = parseInt(req.body.person);
-  db.none('insert into persons(person, team, collection)' +
-      'values(${person}, ${team}, ${collection})',
+  console.log(req.body.password);
+  db.none('insert into persons(person, team, collection, password)' +
+      'values(${person}, ${team}, ${collection}, ${password})',
     req.body)
     .then(function () {
       res.status(200)

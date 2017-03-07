@@ -7,152 +7,78 @@
     <script src="/javascripts/sketch.js"></script>
     <script src="/javascripts/jquery.form.js"></script>
     <script src="/javascripts/notify.js"></script>
+
+    <link rel="stylesheet" href="/stylesheets/add.css">
     <script>
-        // wait for the DOM to be loaded
-        $(document).ready(function() {
-            // bind 'myForm' and provide a simple callback function
-            $('#dataform').ajaxForm({
-                success: function() {
-                    $.notify("Successfully added data", {
-                        position: "bottom right",
-                        className: "bootstrap"
-                    });
+    var range1Values =
+    {
+        "1": "You've selected option 1!",
+        "2": "...and now option 2!",
+        "3": "...stackoverflow rocks for 3!",
+        "4": "...and a custom label 4!",
+        "5": "...and a custom label 5!",
+        "6": "...and a custom label 6!",
+        "7": "...and a custom label 7!",
+        "8": "...and a custom label 8!",
+        "9": "...and a custom label 9!",
+    };
+    var range2Values =
+    {
+        "1": "1 - You've selected option!",
+        "2": "2 - and now option!",
+        "3": "3 - stackoverflow rocks for!",
+        "4": "4 - and a custom label!",
+        "5": "5 - custom text",
+        "6": "6 - and a custom label!",
+        "7": "7 - and a custom label",
+        "8": "8 - and a custom label",
+        "9": "9 - and a custom label",
+    };
+    $(function () {
 
-                },
-                error: function() {
-                    $.notify("FAILED! Check network & input", {
-                        position: "bottom right",
-                        className: "error"
-                    });
+        // on page load, set the text of the label based the value of the range
+        $('#slider1text').text(range1Values[$('#slider1').val()]);
+        $('#slider2text').text(range2Values[$('#slider2').val()]);
 
-                },
-
-            });
+        // setup an event handler to set the text when the range value is dragged (see event for input) or changed (see event for change)
+        $('#slider1').on('input change', function () {
+            $('#slider1text').text(range1Values[$(this).val()]);
         });
+        $('#slider2').on('input change', function () {
+            $('#slider2text').text(range2Values[$(this).val()]);
+        });
+
+    });
     </script>
     <title>Add Data</title>
 </head>
-<style>
-    #tools_sketch {
-        background: url(/images/hybrid.jpg) no-repeat center center;
-        background-size: 500px;
-    }
-
-    body {
-        text-align: left;
-        font-family: arial;
-        width: 500px;
-        margin: 0 auto;
-    }
-
-    h2,
-    h1 {
-        text-align: center;
-    }
-
-    .button {
-        margin: 20px;
-        font-size: 16px;
-        font-weight: bold;
-        padding: 5px 10px;
-    }
-
-    .footer {
-        text-align: center;
-    }
-
-    table {
-        font-family: arial, sans-serif;
-        border-collapse: collapse;
-        width: 100%;
-    }
-
-    input[type=number] {
-        width: 100%;
-    }
-
-    input[type='range'] {
-        -webkit-appearance: none !important;
-        background: grey;
-        height: 15px;
-        width: 500px;
-    }
-    input[type='submit'] {
-        height: 60px;
-        width: 100%;
-    }
-    input[type='number'] {
-        height: 40px;
-        width: 100%;
-        font-size: 20px;
-    }
-    textarea {
-        height: 80px;
-        width: 100%;
-        font-size: 20px;
-    }
-
-    input[type='range']::-webkit-slider-thumb {
-        -webkit-appearance: none !important;
-        background: blue;
-        height: 20px;
-        width: 10px;
-    }
-
-    td,
-    th {
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 8px;
-    }
-
-    tr:nth-child(even) {
-        background-color: #dddddd;
-    }
-</style>
 
 <body>
+
+
     <h1 id="title">The Hybrid Space</h1>
     <hr>
-
     <canvas id="tools_sketch" width="500" height="400"></canvas>
-
-    <script>
-        var mathCanvas = document.getElementById("tools_sketch");
-        var ctx = mathCanvas.getContext("2d");
-        var el = mathCanvas.target || mathCanvas.srcElement;
-
-
-        var img = new Image();
-        img.src = "/images/dot.png";
-        mathCanvas.onclick = function(event) {
-            ctx.clearRect(0, 0, mathCanvas.width, mathCanvas.height);
-            var realx = (Math.round(event.offsetX) - 250);
-            var realy = -(Math.round(event.offsetY) - 200);
-            var x = Math.round(event.offsetX - img.width / 2);
-            var y = Math.round(event.offsetY - img.height / 2);
-            ctx.drawImage(img, x, y);
-            console.log(realx, realy);
-            document.getElementById("x").value = realx;
-            document.getElementById("y").value = realy;
-
-        };
-    </script>
-
-
+    <script src="/javascripts/add.js"></script>
 
     <form id="dataform" action="/api/evaluation" method="post">
         <input type="hidden" id="x" name="x" size="3">
         <input type="hidden" id="y" name="y" size="3">
         <table>
             <tr>
-                <td><input type="number" id="person" placeholder="Person ID" name="person"></td>
+                <td><input type="number" id="person" placeholder="Person ID" name="person"><input type="password" id="password" placeholder="Password" name="password"></td>
             </tr>
             <tr>
-                <td><input type="range" id="slider1" name="slider1" value="50"></td>
+              <td><b>Motivation: </b><label id="slider1text" /></td>
             </tr>
             <tr>
-                <td><input type="range" id="slider2" name="slider2" value="50"></td>
+                <td><input id="slider1" name="slider1" type="range" min="1" max="9" step="1" list="steplist"></td>
+            </tr>
+            <tr>
+              <td><b>Self efficacy: </b><label id="slider2text" /></td>
+            </tr>
+            <tr>
+                <td><input id="slider2" name="slider2" type="range" min="1" max="9" step="1" list="steplist"></td>
             </tr>
             <td><textarea name="comment" placeholder="Comment"></textarea></td>
             </tr>
@@ -161,6 +87,14 @@
             </tr>
         </table>
     </form>
+
+    <datalist id="steplist">
+        <option>0</option>
+        <option>25</option>
+        <option>50</option>
+        <option>75</option>
+        <option>100</option>
+    </datalist>
 
 <a href="/admin">Admin</a>
 </body>

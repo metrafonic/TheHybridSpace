@@ -6,7 +6,8 @@ CREATE DATABASE thehybridspace;
 CREATE TABLE persons (
   Person INTEGER PRIMARY KEY,
   Team VARCHAR(10),
-  Collection VARCHAR(10)
+  Collection VARCHAR(10),
+  Password VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE evaluations (
@@ -22,8 +23,8 @@ CREATE TABLE evaluations (
 
 
 
-INSERT INTO persons(Person, Team, Collection)
-  VALUES (1, 'Lag 1', 'Ving68');
+INSERT INTO persons(Person, Password, Team, Collection)
+  VALUES (1, 'heihei','Lag 1', 'Ving68');
 
 INSERT INTO evaluations (Person, X, Y, Slider1, Comment)
   VALUES (1, 2, 4 , 7, 'test');
