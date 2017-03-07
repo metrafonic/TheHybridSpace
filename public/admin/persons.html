@@ -51,18 +51,6 @@
 
 
 
-  function deleteEvaluation(k){
-  	$.ajax({
-  	    url: "/api/evaluation/" + k,
-  	    type: 'DELETE',
-  	    success: function(result) {
-  	        updateData();
-  	    }
-  	});
-  }
-
-
-
 
   function editPerson(person){
   	var URL = "/person/?id=";
@@ -113,6 +101,12 @@
                     </li>
                     <li class="active">
                         <a href="persons.html"><i class="fa fa-fw fa-bar-chart-o"></i> Persons</a>
+                    </li>
+                    <li>
+                        <a href="teams.html"><i class="fa fa-fw fa-bar-chart-o"></i> Teams</a>
+                    </li>
+                    <li>
+                        <a href="collections.html"><i class="fa fa-fw fa-bar-chart-o"></i> Collections</a>
                     </li>
 
 

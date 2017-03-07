@@ -15,6 +15,8 @@ var db = pgp(connectionString);
 module.exports = {
   getAllEvaluations: getAllEvaluations,
   getPersonEvaluations: getPersonEvaluations,
+  getTeamEvaluations: getTeamEvaluations,
+  getCollectionEvaluations: getCollectionEvaluations,
   getSingleEvaluation: getSingleEvaluation,
   createSecureEvaluation: createSecureEvaluation,
   createEvaluation: createEvaluation,
@@ -24,7 +26,9 @@ module.exports = {
   getSinglePerson: getSinglePerson,
   createPerson: createPerson,
   updatePerson: updatePerson,
-  removePerson: removePerson
+  removePerson: removePerson,
+  getAllTeams: getAllTeams,
+  getAllCollections: getAllCollections,
 };
 
 function checkAuth(req, res, next, parentnext){
@@ -82,6 +86,38 @@ function getPersonEvaluations(req, res, next) {
           status: 'success',
           data: data,
           message: 'Retrieved person evaluations'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function getTeamEvaluations(req, res, next) {
+  var team = req.params.team;
+  db.any('select * from evaluations where team = $1', team)
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: data,
+          message: 'Retrieved team evaluations'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function getCollectionEvaluations(req, res, next) {
+  var collection = req.params.collection;
+  db.any('select * from evaluations where collection = $1', collection)
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: data,
+          message: 'Retrieved collection evaluations'
         });
     })
     .catch(function (err) {
@@ -248,6 +284,36 @@ function removePerson(req, res, next) {
           message: `Removed ${result.rowCount} person`
         });
       /* jshint ignore:end */
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function getAllTeams(req, res, next) {
+  db.any('select DISTINCT team from persons')
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: data,
+          message: 'Retrieved all teams'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function getAllCollections(req, res, next) {
+  db.any('select DISTINCT collection from persons')
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: data,
+          message: 'Retrieved all collections'
+        });
     })
     .catch(function (err) {
       return next(err);

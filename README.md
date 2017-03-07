@@ -85,10 +85,16 @@ curl http://127.0.0.1:3000/api/evaluations
 Get all evaluations of a person:
 ```
 # Get evaluations for person 3:
-curl http://127.0.0.1:3000/api/evaluations/3
+curl http://127.0.0.1:3000/api/evaluations/person/3
 
 {"status":"success","data":[{"evalid":2,"person":3,"time":"20:31:27.304949","date":"2017-03-01T23:00:00.000Z","x":22,"y":3,"slider1":2,"slider2":3,"comment":"test2"}],"message":"Retrieved person evaluations"}
 ```
+Get all evaluations of a team:  
+same as person, different url: http://127.0.0.1:3000/api/evaluations/person/3
+
+Get all evaluations of a collection:  
+Same as person, different url: http://127.0.0.1:3000/api/evaluations/person/3
+
 Get a specific evaluation:
 ```
 # Get data from evaluation 2

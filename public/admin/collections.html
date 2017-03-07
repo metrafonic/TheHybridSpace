@@ -25,35 +25,12 @@
 
 
 
-  function deleteEvaluation(k){
-  	$.ajax({
-  	    url: "/api/evaluation/" + k,
-  	    type: 'DELETE',
-  	    success: function(result) {
-  	        updateData();
-  	    }
-  	});
-  }
-
-  function addEvaluation(){
-  	var URL = "/";
-  	window.open(URL, "popupWindow", "width=600,height=900,scrollbars=yes");
-  }
-
-
-
-
-  function editPerson(person){
-  	var URL = "/person/?id=";
-  	window.open(URL + person, "popupWindow", "width=600,height=900,scrollbars=yes");
-  }
-
   function updateData(){
   	$.when(
-  		$.getJSON('/api/evaluations')
+  		$.getJSON('/api/collections')
   	).done(function(a, b){
   		try {
-  		    setTable(a,"#table1", "#text1", "Delete", "deleteEvaluation", "evalid", page, "nextpage", "previouspage");
+  		    setTable(a,"#table1", "#text1", "View", "editPerson", "team", page, "nextpage", "previouspage");
   		}
   		catch(err) {
   		    console.log(err.message);
@@ -86,7 +63,7 @@
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
-                    <li class="active">
+                    <li >
                         <a href="index.html"><i class="fa fa-fw fa-dashboard"></i> Evaluations</a>
                     </li>
                     <li>
@@ -95,10 +72,9 @@
                     <li>
                         <a href="teams.html"><i class="fa fa-fw fa-bar-chart-o"></i> Teams</a>
                     </li>
-                    <li>
+                    <li class="active">
                         <a href="collections.html"><i class="fa fa-fw fa-bar-chart-o"></i> Collections</a>
                     </li>
-
 
                 </ul>
             </div>
@@ -113,7 +89,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Evaluations <small>Live <img src="/images/live.png"></small>
+                            Collections <small>Live <img src="/images/live.png"></small>
                         </h1>
                         <ol class="breadcrumb">
                             <li class="active">
@@ -136,13 +112,13 @@
                                     </div>
                                     <div class="col-xs-9 text-right">
                                         <div class="huge" id="evaluationnumbers">0</div>
-                                        <div>Registered evaluations</div>
+                                        <div>Collections</div>
                                     </div>
                                 </div>
                             </div>
-                            <a href="javascript:void(0);" onClick="addEvaluation()">
+                            <a href="javascript:void(0);" onClick="">
                                 <div class="panel-footer">
-                                    <span class="pull-left">Add evaluation</span>
+                                    <span class="pull-left"></span>
                                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                                     <div class="clearfix"></div>
                                 </div>
@@ -164,7 +140,7 @@
                     <div class="col-lg-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title"><i class="fa fa-money fa-fw"></i>All Evaluations</h3>
+                                <h3 class="panel-title"><i class="fa fa-money fa-fw"></i>All Collections</h3>
 
                             </div>
 
