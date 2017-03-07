@@ -100,7 +100,7 @@ curl http://127.0.0.1:3000/api/evaluation/2
 Add evaluation:
 ```
 # Adding evaluation for person 3
-curl --data "person=3&x=22&y=3&slider1=2&slider2=3&comment=test2" \
+curl --data "person=3&x=22&y=3&slider1=2&slider2=3&comment=test2&password=mypass" \
 http://127.0.0.1:3000/api/evaluation
 
 {"status":"success","message":"Inserted one evaluation"}
@@ -140,7 +140,7 @@ $ curl http://127.0.0.1:3000/api/person/1
 ```
 Create an a new person in the database:
 ```
-$ curl --data "person=4&team=ST5&collection=USAF" http://127.0.0.1:3000/api/person
+$ curl --data "person=4&team=ST5&collection=USAF&password=mypass" http://127.0.0.1:3000/api/person
 {"status":"success","message":"Inserted one person"}
 ```
 
