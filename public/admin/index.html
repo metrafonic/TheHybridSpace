@@ -26,7 +26,21 @@
   var collection="";
   var team = "";
 
+  function setFilter(data1, data2, context){
+      var parent = document.getElementById(context);
+      parent.innerHTML="";
+      $.each(data1.data, function(i, field){
+          var radio = document.createElement("INPUT");
+          var br = document.createElement("br");
+          radio.setAttribute("type", "radio");
+          radio.setAttribute("name", "collection");
+          radio.innerHTML="yo";
+          var filter = parent.appendChild(radio);
+          parent.append(field.collection);
+          parent.appendChild(br);
 
+    });
+  }
 
 
   function deleteEvaluation(k){
@@ -59,7 +73,7 @@
   	).done(function(a, b, c){
   		try {
   		    setTable(a[0], "table1", "evalid", 15, "Delete", deleteEvaluation);
-
+          setFilter(b[0], c[0], "tablefilter");
           ;
           $("#evaluationnumbers").html(a[0].data.length);
   		}
