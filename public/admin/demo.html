@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>The Hybrid Space</title>
+
+
+
+</head>
+
+<body>
+    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+    <script type="text/javascript" src="/javascripts/table.js"></script>
+    <script>
+
+    function editPerson(person){
+      var URL = "/person/?id=";
+      window.open(URL + person, "popupWindow", "width=600,height=900,scrollbars=yes");
+    }
+
+        function updateData() {
+            $.when(
+                $.getJSON('/api/evaluations')
+            ).done(function(a, b) {
+                try {
+                    setTable(a, "table1", "person", 5, editPerson);
+                } catch (err) {
+                    console.log(err.message);
+                    $("#text1").html("<b>Status: </b> ERROR: " + err.message);
+                }
+
+
+            });
+        }
+        updateData();
+
+    </script>
+
+
+    <div id=table1>
+        <table class="table"></table>
+        <text class="pagetext">1</text>
+        <button class="nextbutton">Next</button>
+        <button class="previousbutton">Last</button>
+    </div>
+
+</body>
+
+</html>

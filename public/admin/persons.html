@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -52,7 +53,7 @@
 
 
 
-  function editPerson(person){
+  function viewPerson(person){
   	var URL = "/person/?id=";
   	window.open(URL + person, "popupWindow", "width=600,height=1200,scrollbars=yes");
   }
@@ -62,7 +63,8 @@
   		$.getJSON('/api/persons')
   	).done(function(a, b){
   		try {
-  		    setTable(a,"#table1", "#text1", "View", "editPerson", "person", page, "nextpage", "previouspage");
+  		    setTable(a, "table1", "person", 20, "View", viewPerson);
+          $("#personnumbers").html(a.data.length);
   		}
   		catch(err) {
   		    console.log(err.message);
@@ -102,12 +104,6 @@
                     <li class="active">
                         <a href="persons.html"><i class="fa fa-fw fa-bar-chart-o"></i> Persons</a>
                     </li>
-                    <li>
-                        <a href="teams.html"><i class="fa fa-fw fa-bar-chart-o"></i> Teams</a>
-                    </li>
-                    <li>
-                        <a href="collections.html"><i class="fa fa-fw fa-bar-chart-o"></i> Collections</a>
-                    </li>
 
 
                 </ul>
@@ -145,7 +141,7 @@
                                         <i class="fa fa-comments fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class="huge" id="evaluationnumbers">0</div>
+                                        <div class="huge" id="personnumbers">0</div>
                                         <div>Registered persons</div>
                                     </div>
                                 </div>
@@ -178,14 +174,15 @@
                               <div class="table-responsive">
 
 
-                                  <table class="table table-bordered table-hover table-striped" id="table1">
-
-                                  </table>
+                                <div id=table1>
+                                    <table class="table"></table>
+                                    <button class="previousbutton">Previous</button>
+                                    <button class="nextbutton">Next</button>
+                                    <text class="pagetext">1</text>
+                                </div>
 
                               </div>
-                              <button id="previouspage" onclick="previousPage(0)">Previous</button>
-                              <button id="nextpage" onclick="nextPage(0)">Next</button>
-                              <text>Page: </text><text id=pagenumber>1</text>
+
                               <div class="text-right">
                                   <p id="text1">No data recieved</p>
                               </div>

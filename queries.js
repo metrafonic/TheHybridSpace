@@ -14,22 +14,30 @@ var db = pgp(connectionString);
 
 module.exports = {
   getAllEvaluations: getAllEvaluations,
-  getPersonEvaluations: getPersonEvaluations,
-  getTeamEvaluations: getTeamEvaluations,
-  getCollectionEvaluations: getCollectionEvaluations,
   getSingleEvaluation: getSingleEvaluation,
   createSecureEvaluation: createSecureEvaluation,
-  createEvaluation: createEvaluation,
   updateEvaluation: updateEvaluation,
   removeEvaluation: removeEvaluation,
+
   getAllPersons: getAllPersons,
   getSinglePerson: getSinglePerson,
+  getPersonEvaluations: getPersonEvaluations,
+
+  getPersonsInCollection: getPersonsInCollection,
+  getEvaluationsInCollection: getEvaluationsInCollection,
+  getPersonsInTeam: getPersonsInTeam,
+  getEvaluationsInTeam: getEvaluationsInTeam,
+
   createPerson: createPerson,
   updatePerson: updatePerson,
   removePerson: removePerson,
   getAllTeams: getAllTeams,
   getAllCollections: getAllCollections,
 };
+
+selectstringevaluations = "select evalid, persons.person, team, x, y, slider1, slider2, comment, time ";
+fromstringevaluations = "from persons INNER JOIN evaluations ON (persons.person = evaluations.person) ";
+
 
 function checkAuth(req, res, next, parentnext){
   //TODO: Check user exists
@@ -63,7 +71,7 @@ function authenticatePerson(req, res, next, parentnext){
 }
 
 function getAllEvaluations(req, res, next) {
-  db.any('select * from persons INNER JOIN evaluations ON (persons.person = evaluations.person);')
+  db.any(selectstringevaluations + fromstringevaluations + ' ;')
     .then(function (data) {
       res.status(200)
         .json({
@@ -77,57 +85,11 @@ function getAllEvaluations(req, res, next) {
     });
 }
 
-function getPersonEvaluations(req, res, next) {
-  var person = parseInt(req.params.id);
-  db.any('select * from evaluations where person = $1', person)
-    .then(function (data) {
-      res.status(200)
-        .json({
-          status: 'success',
-          data: data,
-          message: 'Retrieved person evaluations'
-        });
-    })
-    .catch(function (err) {
-      return next(err);
-    });
-}
 
-function getTeamEvaluations(req, res, next) {
-  var team = req.params.id;
-  db.any('select * from persons INNER JOIN evaluations ON (persons.person = evaluations.person) WHERE team LIKE $1;', team)
-    .then(function (data) {
-      res.status(200)
-        .json({
-          status: 'success',
-          data: data,
-          message: 'Retrieved team evaluations'
-        });
-    })
-    .catch(function (err) {
-      return next(err);
-    });
-}
-
-function getCollectionEvaluations(req, res, next) {
-  var collection = req.params.id;
-  db.any('select * from persons INNER JOIN evaluations ON (persons.person = evaluations.person) WHERE collection LIKE $1;', collection)
-    .then(function (data) {
-      res.status(200)
-        .json({
-          status: 'success',
-          data: data,
-          message: 'Retrieved collection evaluations'
-        });
-    })
-    .catch(function (err) {
-      return next(err);
-    });
-}
 
 function getSingleEvaluation(req, res, next) {
   var evalID = parseInt(req.params.id);
-  db.one('select * from evaluations where evalid = $1', evalID)
+  db.one(selectstringevaluations + fromstringevaluations + 'where evalid = $1', evalID)
     .then(function (data) {
       res.status(200)
         .json({
@@ -224,6 +186,9 @@ function getAllPersons(req, res, next) {
     });
 }
 
+
+
+
 function getSinglePerson(req, res, next) {
   var evalID = parseInt(req.params.id);
   db.one('select * from persons where person = $1', evalID)
@@ -239,6 +204,92 @@ function getSinglePerson(req, res, next) {
       return next(err);
     });
 }
+
+function getPersonEvaluations(req, res, next) {
+  var person = parseInt(req.params.id);
+  db.any(selectstringevaluations + fromstringevaluations + 'where persons.person = $1', person)
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: data,
+          message: 'Retrieved person evaluations'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function getPersonsInCollection(req, res, next){
+  var collection = req.params.collection;
+  console.log(team);
+  db.any('select * from persons where collection = $1', [collection])
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: data,
+          message: 'Retrieved person evaluations'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function getEvaluationsInCollection(req, res, next){
+  var collection = req.params.collection;
+  console.log(team);
+  db.any(selectstringevaluations + fromstringevaluations + 'where collection = $1', [collection])
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: data,
+          message: 'Retrieved person evaluations'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function getPersonsInTeam(req, res, next){
+  var team = req.params.team;
+  var collection = req.params.collection;
+  console.log(team);
+  db.any('select * from persons where collection = $1 AND team = $2', [collection, team])
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: data,
+          message: 'Retrieved person evaluations'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function getEvaluationsInTeam(req, res, next){
+  var collection = req.params.collection;
+  console.log(team);
+  db.any(selectstringevaluations + fromstringevaluations + 'where collection = $1 AND team = $2', [collection, team])
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: data,
+          message: 'Retrieved person evaluations'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
 
 function createPerson(req, res, next) {
   req.body.person = parseInt(req.body.person);
