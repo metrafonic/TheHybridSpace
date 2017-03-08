@@ -1,41 +1,43 @@
+
 function setTable(a, context, uniquekey, perpage, callbackText, callback) {
     var parent = document.getElementById(context);
-    var nextbutton = parent.getElementsByClassName('nextbutton')[0];
-    var previousbutton = parent.getElementsByClassName('previousbutton')[0];
+    if (parent.getAttribute('page') == undefined){
+      parent.setAttribute("page", 0);
+    }
+    page = parent.getAttribute('page');
+    pagemin = page*perpage;
+    pagemax =pagemin+perpage;
+    parent.innerHTML = "";
+    var anextbutton = document.createElement("button");
+    var apreviousbutton = document.createElement("button");
+    var atable = document.createElement("TABLE");
+    anextbutton.innerHTML = "Next";
+    apreviousbutton.innerHTML = "Previous";
+    atable.setAttribute("class", "table table-bordered table-hover table-striped");
+    var parent = document.getElementById(context);
+    var table = parent.appendChild(atable);
+    var table = parent.getElementsByClassName('table')[0];
+
     var pagetext = parent.getElementsByClassName('pagetext')[0];
     var table = parent.getElementsByClassName('table')[0];
-    page = parseInt(pagetext.innerHTML);
-    pagemin = (page - 1) * perpage;
-    pagemax = pagemin + perpage;
 
-    visibility="hidden"
-    if (a.data.length>perpage){
-      visibility="visible";
+    if (page>0){
+      var previousbutton = parent.appendChild(apreviousbutton);
+      previousbutton.addEventListener("click", function(){
+        parent.setAttribute("page", parseInt(parent.getAttribute('page'))-1);
+        updateData();
+      });
     }
-    nextbutton.style.visibility = visibility;
-    previousbutton.style.visibility = visibility;
-    pagetext.style.visibility = visibility;
+    if(a.data.length>pagemax){
+      var nextbutton = parent.appendChild(anextbutton);
+      nextbutton.addEventListener("click", function(){
+        parent.setAttribute("page", parseInt(parent.getAttribute('page'))+1);
+        updateData();
+      });
+    }
 
-    nextbutton.addEventListener("click", function() {
-        console.log(pagemax, pagemin, page, a.data.length);
-        if (pagemax < a.data.length) {
-            pagetext.innerHTML = parseInt(pagetext.innerHTML) + 1;
-            fillTable(a, context, uniquekey, perpage, callbackText, callback);
-        }
-    });
-    previousbutton.addEventListener("click", function() {
-        if (page > 1) {
-            pagetext.innerHTML = parseInt(pagetext.innerHTML) - 1;
-            fillTable(a, context, uniquekey, perpage, callbackText, callback);
-        }
-    });
-    fillTable(a, context, uniquekey, perpage, callbackText, callback);
 
-    function fillTable(a, context, uniquekey, perpage, callbackText, callback) {
-      page = parseInt(pagetext.innerHTML);
-      pagemin = (page - 1) * perpage;
-      pagemax = pagemin + perpage;
-        table.innerHTML = "";
+    table.innerHTML = "";
 
         var tbody = table.createTBody();
         var thead= tbody.insertRow();
@@ -68,5 +70,4 @@ function setTable(a, context, uniquekey, perpage, callbackText, callback) {
             }
         });
 
-    }
 }

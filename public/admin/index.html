@@ -22,11 +22,14 @@
   <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
   <script type="text/javascript" src="/javascripts/table.js"></script>
   <script>
+  var base = "";
+  var collection="";
+  var team = "";
+
 
 
 
   function deleteEvaluation(k){
-    document.getElementById('table1').getElementsByClassName('table')[0].innerHTML = "";
   	$.ajax({
   	    url: "/api/evaluation/" + k,
   	    type: 'DELETE',
@@ -43,15 +46,21 @@
 
 
   function updateData(){
+    base = "/api/evaluations";
+    retrieveData();
+  }
+
+  function retrieveData(callback){
   	$.when(
-  		$.getJSON('/api/evaluations'),
-      $.getJSON('/api/teams'),
-      $.getJSON('/api/collections')
+  		$.getJSON(base + collection + team),
+      $.getJSON('/api/collections'),
+      $.getJSON('/api/teams')
+
   	).done(function(a, b, c){
   		try {
-  		    setTable(a[0], "table1", "evalid", 20, "Delete", deleteEvaluation);
-          setTable(b[0], "tableteams", "team", 20, "Select", deleteEvaluation);
-          setTable(c[0], "tablecollections", "collection", 20, "Select", deleteEvaluation);
+  		    setTable(a[0], "table1", "evalid", 15, "Delete", deleteEvaluation);
+
+          ;
           $("#evaluationnumbers").html(a[0].data.length);
   		}
   		catch(err) {
@@ -130,7 +139,7 @@
                 <!-- /.row -->
                 <div class="row">
 
-                  <div class="col-lg-3">
+                  <div class="col-lg-2">
                     <div class="row">
                       <div class="panel panel-primary">
                           <div class="panel-heading">
@@ -160,27 +169,18 @@
                           </div>
                           <div class="panel-body">
                               <div class="table-responsive">
-                                <div id=tableteams>
-                                    <table class="table table-bordered table-hover table-striped"></table>
-                                    <button class="previousbutton">Previous</button>
-                                    <button class="nextbutton">Next</button>
-                                    <text class="pagetext">1</text>
-                                </div>
-                                <div id=tablecollections>
-                                    <table class="table table-bordered table-hover table-striped"></table>
-                                    <button class="previousbutton">Previous</button>
-                                    <button class="nextbutton">Next</button>
-                                    <text class="pagetext">1</text>
+                                <div id=tablefilter>
+
                                 </div>
                               </div>
 
                           </div>
                       </div>
                     </div>
-                  
+
                   </div>
 
-                  <div class="col-lg-9">
+                  <div class="col-lg-10">
                       <div class="panel panel-default">
                           <div class="panel-heading">
                               <h3 class="panel-title"><i class="fa fa-money fa-fw"></i>All Evaluations</h3>
@@ -194,10 +194,7 @@
 
 
                                 <div id=table1>
-                                    <table class="table table table-bordered table-hover table-striped"></table>
-                                    <button class="previousbutton">Previous</button>
-                                    <button class="nextbutton">Next</button>
-                                    <text class="pagetext">1</text>
+
                                 </div>
 
                               </div>
