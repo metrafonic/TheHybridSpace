@@ -21,21 +21,16 @@ module.exports = {
 
   getAllPersons: getAllPersons,
   getSinglePerson: getSinglePerson,
-  getPersonEvaluations: getPersonEvaluations,
-
-  getPersonsInCollection: getPersonsInCollection,
-  getEvaluationsInCollection: getEvaluationsInCollection,
-  getPersonsInTeam: getPersonsInTeam,
-  getEvaluationsInTeam: getEvaluationsInTeam,
-
   createPerson: createPerson,
   updatePerson: updatePerson,
   removePerson: removePerson,
+
   getAllTeams: getAllTeams,
   getAllCollections: getAllCollections,
+  searchDB:searchDB
 };
 
-selectstringevaluations = "select evalid, persons.person, team, x, y, slider1, slider2, comment, time ";
+selectstringevaluations = "select evalid, persons.person, team, collection, x, y, slider1, slider2, comment, time ";
 fromstringevaluations = "from persons INNER JOIN evaluations ON (persons.person = evaluations.person) ";
 
 
@@ -85,8 +80,6 @@ function getAllEvaluations(req, res, next) {
     });
 }
 
-
-
 function getSingleEvaluation(req, res, next) {
   var evalID = parseInt(req.params.id);
   db.one(selectstringevaluations + fromstringevaluations + 'where evalid = $1', evalID)
@@ -102,7 +95,6 @@ function getSingleEvaluation(req, res, next) {
       return next(err);
     });
 }
-
 
 
 
@@ -221,75 +213,6 @@ function getPersonEvaluations(req, res, next) {
     });
 }
 
-function getPersonsInCollection(req, res, next){
-  var collection = req.params.collection;
-  console.log(team);
-  db.any('select * from persons where collection = $1', [collection])
-    .then(function (data) {
-      res.status(200)
-        .json({
-          status: 'success',
-          data: data,
-          message: 'Retrieved person evaluations'
-        });
-    })
-    .catch(function (err) {
-      return next(err);
-    });
-}
-
-function getEvaluationsInCollection(req, res, next){
-  var collection = req.params.collection;
-  console.log(team);
-  db.any(selectstringevaluations + fromstringevaluations + 'where collection = $1', [collection])
-    .then(function (data) {
-      res.status(200)
-        .json({
-          status: 'success',
-          data: data,
-          message: 'Retrieved person evaluations'
-        });
-    })
-    .catch(function (err) {
-      return next(err);
-    });
-}
-
-function getPersonsInTeam(req, res, next){
-  var team = req.params.team;
-  var collection = req.params.collection;
-  console.log(team);
-  db.any('select * from persons where collection = $1 AND team = $2', [collection, team])
-    .then(function (data) {
-      res.status(200)
-        .json({
-          status: 'success',
-          data: data,
-          message: 'Retrieved person evaluations'
-        });
-    })
-    .catch(function (err) {
-      return next(err);
-    });
-}
-
-function getEvaluationsInTeam(req, res, next){
-  var collection = req.params.collection;
-  console.log(team);
-  db.any(selectstringevaluations + fromstringevaluations + 'where collection = $1 AND team = $2', [collection, team])
-    .then(function (data) {
-      res.status(200)
-        .json({
-          status: 'success',
-          data: data,
-          message: 'Retrieved person evaluations'
-        });
-    })
-    .catch(function (err) {
-      return next(err);
-    });
-}
-
 
 function createPerson(req, res, next) {
   req.body.person = parseInt(req.body.person);
@@ -369,4 +292,37 @@ function getAllCollections(req, res, next) {
     .catch(function (err) {
       return next(err);
     });
+}
+
+function searchDB(req, res, next){
+  searchstring = "";
+  for (key in req.query){
+      comparestringstart=" LIKE '";
+      comparestringend="'";
+      value = req.query[key];
+      if (!isNaN(value)){
+        value = value.toString();
+        comparestringstart = " = ";
+        comparestringend=""
+      }
+      if (searchstring!=""){
+        searchstring+=" AND"
+      }else{
+        searchstring+= "WHERE";
+      }
+      searchstring += " " + key + comparestringstart + value + comparestringend;
+  }
+  db.any(selectstringevaluations + fromstringevaluations + searchstring + ';')
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: data,
+          message: 'Retrieved person evaluations'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+
 }

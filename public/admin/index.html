@@ -18,77 +18,67 @@
     <link href="/stylesheets/sb-admin.css" rel="stylesheet">
 
 </head>
+
 <body>
-  <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
-  <script type="text/javascript" src="/javascripts/table.js"></script>
-  <script>
-  var base = "";
-  var collection="";
-  var team = "";
+    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+    <script type="text/javascript" src="/javascripts/table.js"></script>
+    <script type="text/javascript" src="/javascripts/filter.js"></script>
+    <script>
+        var filter = "";
 
-  function setFilter(data1, data2, context){
-      var parent = document.getElementById(context);
-      parent.innerHTML="";
-      $.each(data1.data, function(i, field){
-          var radio = document.createElement("INPUT");
-          var br = document.createElement("br");
-          radio.setAttribute("type", "radio");
-          radio.setAttribute("name", "collection");
-          radio.innerHTML="yo";
-          var filter = parent.appendChild(radio);
-          parent.append(field.collection);
-          parent.appendChild(br);
+        function applyFilter(newfilter){
+          filter = newfilter;
+          updateData();
+          console.log(filter);
 
-    });
-  }
+        }
 
+        function deleteEvaluation(k) {
+            $.ajax({
+                url: "/api/evaluation/" + k,
+                type: 'DELETE',
+                success: function(result) {
+                    updateData();
+                }
+            });
+        }
 
-  function deleteEvaluation(k){
-  	$.ajax({
-  	    url: "/api/evaluation/" + k,
-  	    type: 'DELETE',
-  	    success: function(result) {
-  	        updateData();
-  	    }
-  	});
-  }
-
-  function addEvaluation(){
-  	var URL = "/";
-  	window.open(URL, "popupWindow", "width=600,height=900,scrollbars=yes");
-  }
+        function addEvaluation() {
+            var URL = "/";
+            window.open(URL, "popupWindow", "width=600,height=900,scrollbars=yes");
+        }
 
 
-  function updateData(){
-    base = "/api/evaluations";
-    retrieveData();
-  }
+        function updateData() {
 
-  function retrieveData(callback){
-  	$.when(
-  		$.getJSON(base + collection + team),
-      $.getJSON('/api/collections'),
-      $.getJSON('/api/teams')
+            base = "/api/search";
+            retrieveData();
+        }
 
-  	).done(function(a, b, c){
-  		try {
-  		    setTable(a[0], "table1", "evalid", 15, "Delete", deleteEvaluation);
-          setFilter(b[0], c[0], "tablefilter");
-          ;
-          $("#evaluationnumbers").html(a[0].data.length);
-  		}
-  		catch(err) {
-  		    console.log(err.message);
-  				$("#text1").html("<b>Status: </b> ERROR: " + err.message);
-  		}
+        function retrieveData(callback) {
+            $.when(
+                $.getJSON(base + filter),
+                $.getJSON('/api/collections'),
+                $.getJSON('/api/teams')
+
+            ).done(function(a, b, c) {
+                try {
+                    setTable(a[0], "table1", "evalid", 15, "Delete", deleteEvaluation);
+                    setFilter(b[0], c[0], "tablefilter", applyFilter);
+                    $("#evaluationnumbers").html(a[0].data.length);
+                    $("#text1").html("<b>Status: </b> Recieved all data");
+                } catch (err) {
+                    console.log(err.message);
+                    $("#text1").html("<b>Status: </b> ERROR: " + err.message);
+                }
 
 
-  	});
-  }
+            });
+        }
 
-  updateData();
-  setInterval(updateData, 10000);
-  </script>
+        updateData();
+        setInterval(updateData, 5000);
+    </script>
 
     <div id="wrapper">
 
@@ -153,72 +143,72 @@
                 <!-- /.row -->
                 <div class="row">
 
-                  <div class="col-lg-2">
-                    <div class="row">
-                      <div class="panel panel-primary">
-                          <div class="panel-heading">
-                              <div class="row">
-                                  <div class="col-xs-3">
-                                      <i class="fa fa-comments fa-5x"></i>
-                                  </div>
-                                  <div class="col-xs-9 text-right">
-                                      <div class="huge" id="evaluationnumbers">0</div>
-                                      <div>Registered evaluations</div>
-                                  </div>
-                              </div>
-                          </div>
-                          <a href="javascript:void(0);" onClick="addEvaluation()">
-                              <div class="panel-footer">
-                                  <span class="pull-left">Add evaluation</span>
-                                  <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                  <div class="clearfix"></div>
-                              </div>
-                          </a>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="panel panel-default">
-                          <div class="panel-heading">
-                              <h3 class="panel-title"><i class="fa fa-money fa-fw"></i>Filter Teams:</h3>
-                          </div>
-                          <div class="panel-body">
-                              <div class="table-responsive">
-                                <div id=tablefilter>
+                    <div class="col-lg-2">
+                        <div class="row">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-xs-3">
+                                            <i class="fa fa-comments fa-5x"></i>
+                                        </div>
+                                        <div class="col-xs-9 text-right">
+                                            <div class="huge" id="evaluationnumbers">0</div>
+                                            <div>Evaluations</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="javascript:void(0);" onClick="addEvaluation()">
+                                    <div class="panel-footer">
+                                        <span class="pull-left">Add evaluation</span>
+                                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title"><i class="fa fa-money fa-fw"></i>Filter Evaluations:</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="table-responsive">
+                                        <div id=tablefilter>
+
+                                        </div>
+                                    </div>
 
                                 </div>
-                              </div>
+                            </div>
+                        </div>
 
-                          </div>
-                      </div>
                     </div>
 
-                  </div>
+                    <div class="col-lg-10">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-money fa-fw"></i>Evaluations</h3>
 
-                  <div class="col-lg-10">
-                      <div class="panel panel-default">
-                          <div class="panel-heading">
-                              <h3 class="panel-title"><i class="fa fa-money fa-fw"></i>All Evaluations</h3>
+                            </div>
 
-                          </div>
-
-                          <div class="panel-body">
+                            <div class="panel-body">
 
 
-                              <div class="table-responsive">
+                                <div class="table-responsive">
 
 
-                                <div id=table1>
+                                    <div id=table1>
+
+                                    </div>
 
                                 </div>
 
-                              </div>
-
-                              <div class="text-right">
-                                  <p id="text1">No data recieved</p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
+                                <div class="text-right">
+                                    <p id="text1">No data recieved</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
 

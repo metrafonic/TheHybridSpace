@@ -62,7 +62,6 @@ function setTable(a, context, uniquekey, perpage, callbackText, callback) {
                 button.innerHTML = callbackText;
                 button.addEventListener("click", function() {
                     callback(bodyrow.cells[z].innerHTML);
-                    console.log(bodyrow.cells[z]);
                 });
                 bodyrow.insertCell().appendChild(button);
 
