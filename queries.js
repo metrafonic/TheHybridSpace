@@ -296,15 +296,25 @@ function getAllCollections(req, res, next) {
 
 function searchDB(req, res, next){
   searchstring = "";
+  intlist = ['evalid', 'person', 'x', 'y', 'slider1', 'slider2'];
   for (key in req.query){
       comparestringstart=" LIKE '";
       comparestringend="'";
       value = req.query[key];
-      if (!isNaN(value)){
+      //Convert compare statement if it is an int
+      if ((intlist.indexOf(key) > -1)){
         value = value.toString();
         comparestringstart = " = ";
         comparestringend=""
       }
+
+      //fix ambiguous error for person
+      if (key == 'person'){
+        console.log("neger");
+        key='persons.person';
+      }
+
+      //Setup string
       if (searchstring!=""){
         searchstring+=" AND"
       }else{

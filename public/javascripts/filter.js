@@ -1,29 +1,32 @@
-function setFilter(data1, data2, context, callback) {
+function addQueryField(parent){
+  text=document.createElement("input");
+  text.innerHTML="Add query field";
+  text = parent.appendChild(text);
+}
+
+function setFilter(context, callback) {
     var parent = document.getElementById(context);
-    if (parent.getAttribute('loaded') == undefined) {
-        parent.setAttribute("loaded", 1);
-        parent.innerHTML = "";
-        var aselect = document.createElement("select");
-        var select = parent.appendChild(aselect);
-        var option = document.createElement("option");
-        option.setAttribute("value", "None");
-        option.innerHTML = "None";
-        select.appendChild(option);
-        $.each(data1.data, function(i, field) {
+    console.log(context);
+    buttonAdd=document.createElement("button");
+    buttonAdd.innerHTML="Add query field";
+    buttonSearch=document.createElement("button");
+    buttonSearch.innerHTML="Search";
+    buttonAdd = parent.appendChild(buttonAdd);
+    buttonSearch = parent.appendChild(buttonSearch);
 
-            var option = document.createElement("option");
-            option.setAttribute("value", field.collection);
-            option.innerHTML = field.collection;
-            select.appendChild(option);
 
-        });
-        select.addEventListener("click", function(e) {
-            choice = select.options[select.options.selectedIndex].value;
-            if (choice == 'None') {
-                callback("");
-            } else {
-                callback("?collection=" + choice);
-            }
-        });
-    }
+    buttonAdd.addEventListener("click", function(){
+      addQueryField(parent);
+    });
+    buttonSearch.addEventListener("click", function(){
+      returnstring="?";
+      callback("?collection=Ving68");
+      inputs = parent.getElementsByTagName('input');
+      for (index = 0; index < inputs.length; ++index) {
+          console.log(inputs[index].value);
+          text= inputs[index].value + "&";
+          returnstring=returnstring + text;
+      }
+      callback(returnstring);
+    });
 }
