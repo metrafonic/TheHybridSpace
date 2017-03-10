@@ -33,4 +33,5 @@ function setFilter(context, callback) {
       }
       callback(returnstring);
     });
+
 }
