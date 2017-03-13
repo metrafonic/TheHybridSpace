@@ -1,8 +1,17 @@
 function addQueryField(parent){
   br=document.createElement("br");
+
+  select=document.createElement("select");
+
+  option=document.createElement("option");
+  option.innerHTML="aa";
+
   text=document.createElement("input");
   text.innerHTML="Add query field";
-  text = parent.appendChild(text);
+
+  select = parent.appendChild(select);
+  select.appendChild(option);
+  parent.appendChild(text);
   parent.appendChild(br);
 }
 

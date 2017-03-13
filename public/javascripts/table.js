@@ -24,14 +24,16 @@ function setTable(a, context, uniquekey, perpage, callbackText, callback) {
     if (page>0){
       var previousbutton = parent.appendChild(apreviousbutton);
       previousbutton.addEventListener("click", function(){
-        parent.setAttribute("page", page-1);
+        console.log(page);
+        parent.setAttribute("page", parseInt(page)-1);
         updateData();
       });
     }
     if(a.data.length>pagemax){
       var nextbutton = parent.appendChild(anextbutton);
       nextbutton.addEventListener("click", function(){
-        parent.setAttribute("page", page+1);
+        console.log(page);
+        parent.setAttribute("page", parseInt(page)+1);
         updateData();
       });
     }

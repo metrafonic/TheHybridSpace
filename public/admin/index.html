@@ -31,6 +31,14 @@
           updateData();
 
         }
+        function browseAPI(){
+          var URL = base + filter;
+          window.open(URL);
+        }
+        function downloadCSV(){
+          var URL = "/api/download"+ filter;
+          window.open(URL);
+        }
 
         function deleteEvaluation(k) {
             $.ajax({
@@ -172,7 +180,9 @@
                                 <h3 class="panel-title">Download Data:</h3>
                             </div>
                             <div class="panel-body">
-                                Download with the current filters
+                                Download with the current filters<br>
+                                This will convert the raw JSON data to CSV, for use in excel.<br>
+                                <a href="javascript:void(0);" onClick="downloadCSV()"><b>Download CSV data</b></a><br>
                             </div>
                         </div>
                     </div>
@@ -182,11 +192,9 @@
                                 <h3 class="panel-title">Browse API (Advanced):</h3>
                             </div>
                             <div class="panel-body">
-                                Use the API to view the data in JSON format<br>
-                                <a href="/api/search">/api/search</a><br>
-                                <small>For example, we can search for evaluations in
-                                the team Lag 1 in Ving 68:
-                                <a href="/api/search/?collection=Ving68&team=Lag%201">Example</a>
+                                Use the API with the current filters to retrieve the data in JSON format<br>
+                                <a href="javascript:void(0);" onClick="browseAPI()">View JSON data</a><br>
+
                               </small>
 
                             </div>
