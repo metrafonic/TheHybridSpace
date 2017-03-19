@@ -22,17 +22,14 @@ sudo systemctl start postgresql
 Create user
 ```
 sudo su - postgres
-$ createuser yourusername
+bash-4.3$ createuser yourusername
+bash-4.3$ psql
+postgres=# ALTER USER yourusername CREATEDB;
+postgres=# \q
 exit
-$ createdb
+createdb
 ```
 
-Give CREATEDB permission:
-```
-sudo su - postgres
-$ psql
-ALTER USER yourusername CREATEDB;
-```
 
 Give access to db by editing /var/lib/pgsql/data/pg_hba.conf:
 ```
