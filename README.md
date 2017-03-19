@@ -13,9 +13,9 @@ I have plans to integrate this as a docker container to avoid initialization.
 Install software
 ```
 sudo dnf install postgresql-server postgresql-contrib
+sudo postgresql-setup --initdb --unit postgresql
 sudo systemctl enable postgresql
 sudo systemctl start postgresql
-sudo postgresql-setup --initdb --unit postgresql
 
 ```
 
