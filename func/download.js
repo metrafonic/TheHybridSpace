@@ -55,9 +55,9 @@ function sendCSV(req, res, next, jsondata) {
         // Errors are thrown for bad options, or if the data is empty and no fields are provided.
         // Be sure to provide fields if it is possible that your data array will be empty.
         res.send({
-            status: 'success',
+            status: 'error',
             data: err,
-            message: 'Retrieved all teams'
+            message: 'check input parameters'
         });
     }
 

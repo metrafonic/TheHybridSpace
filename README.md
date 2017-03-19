@@ -58,7 +58,7 @@ sudo systemctl restart postgresql
 npm install
 
 # Initialize PostgreSQL DB
-psql -f initdb.sql
+psql -f initdb/initdb.sql
 
 #Start service
 npm start

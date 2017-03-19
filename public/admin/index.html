@@ -56,18 +56,21 @@
         }
 
 
-        function updateData() {
+        function updateData(firsttime) {
 
             base = "/api/search";
-            retrieveData();
+            retrieveData(firsttime);
         }
 
-        function retrieveData(callback) {
+        function retrieveData(firsttime) {
             $.when(
                 $.getJSON(base + filter),
                 $.getJSON('/api/collections')
             ).done(function(a, b, c) {
                 try {
+                  if (firsttime){
+                    setFilter("tablefilter", applyFilter, a[0].data);
+                  }
                     setTable(a[0], "table1", "evalid", 15, "Delete", deleteEvaluation);
                     $("#evaluationnumbers").html(a[0].data.length);
                     $("#text1").html("<b>Status: </b> Recieved all data");
@@ -81,13 +84,9 @@
         }
 
         $(document).ready(function(){
-            setFilter("tablefilter", applyFilter);
-            updateData();
+            updateData(true);
+            setInterval(updateData, 5000);
         });
-
-
-
-        setInterval(updateData, 5000);
     </script>
 
     <div id="wrapper">
