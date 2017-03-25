@@ -1,19 +1,22 @@
 version: '2'
 services:
   backend:
-    build: .
+    image: metrafonic/thehybridspace
+    cpu_shares: 100
+    mem_limit: 224288000
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432/thehybridspace
     ports:
-      - 3000:3000
+      - 80:3000
     links:
       - db
 
   db:
-    image: postgres
+    image: metrafonic/thehybridspace_db
+    cpu_shares: 100
+    mem_limit: 224288000
     environment:
-    - DEBUG=false
-    - DB_USER=postgres
-    - DB_PASS=postgres
-    volumes:
-      - ./initdb/initdb.sql:/docker-entrypoint-initdb.d/init.sql
+      - DEBUG=false
+      - DB_USER=postgres
+      - DB_PASS=postgres
+
