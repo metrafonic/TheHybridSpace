@@ -5,14 +5,10 @@ MAINTAINER Mathias Fredrik Hedberg <hedberg.mathias@gmail.com>
 
 # Create app directory
 RUN mkdir -p /usr/src
+WORKDIR /usr/src/
+RUN git clone https://github.com/metrafonic/TheHybridSpace.git app
 WORKDIR /usr/src/app
-
-COPY package.json /usr/src/app/
-RUN mkdir /docker-entrypoint-initdb.d
-COPY initdb/initdb.sql /docker-entrypoint-initdb.d/initdb.sql
 RUN npm install
-
-COPY . /usr/src/app
 
 EXPOSE 3000
 
