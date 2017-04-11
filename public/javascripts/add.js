@@ -7,8 +7,8 @@ var img = new Image();
 img.src = "/images/dot.png";
 mathCanvas.onclick = function(event) {
     ctx.clearRect(0, 0, mathCanvas.width, mathCanvas.height);
-    var realx = (Math.round(event.offsetX) - 250);
-    var realy = -(Math.round(event.offsetY) - 200);
+    var realx = (Math.round(event.offsetX) - 250)/2.5;
+    var realy = -(Math.round(event.offsetY) - 250)/2.5;
     var x = Math.round(event.offsetX - img.width / 2);
     var y = Math.round(event.offsetY - img.height / 2);
     ctx.drawImage(img, x, y);
