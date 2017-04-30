@@ -32,7 +32,7 @@ module.exports = {
 
 selectstringevaluations = "select evalid, persons.person, team, collection, x, y, slider1, slider2, comment, time ";
 fromstringevaluations = "from persons INNER JOIN evaluations ON (persons.person = evaluations.person) ";
-sortstring = "SORT BY evalid";
+sortstring = "ORDER BY evalid";
 
 
 function checkAuth(req, res, next, parentnext){
