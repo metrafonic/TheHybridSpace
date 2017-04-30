@@ -29,7 +29,9 @@
 
 <body>
     <div id="container"></div>
+    <b>Control</b>
     <div id="containerslider1"></div>
+    <b>Effort</b>
     <div id="containerslider2"></div>
     <text id="person"></text><br>
     <text id="team"></text><br>
@@ -81,8 +83,8 @@
                 i++;
             });
             showScatter(datedata);
-            showSlider(slider1data, 'Control','containerslider1');
-            showSlider(slider2data, 'Effort','containerslider2');
+            showSlider(slider1data, 'slider1','containerslider1');
+            showSlider(slider2data, 'slider2','containerslider2');
 
         }
 
@@ -173,7 +175,7 @@
                   }
                 },
                 title: {
-                    text: title
+                    text: null
                 },
 
 
