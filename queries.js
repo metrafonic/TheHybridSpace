@@ -32,6 +32,7 @@ module.exports = {
 
 selectstringevaluations = "select evalid, persons.person, team, collection, x, y, slider1, slider2, comment, time ";
 fromstringevaluations = "from persons INNER JOIN evaluations ON (persons.person = evaluations.person) ";
+sortstring = "SORT BY evalid";
 
 
 function checkAuth(req, res, next, parentnext){
@@ -322,7 +323,7 @@ function searchDB(req, res, next){
       }
       searchstring += " " + key + comparestringstart + value + comparestringend;
   }
-  db.any(selectstringevaluations + fromstringevaluations + searchstring + ';')
+  db.any(selectstringevaluations + fromstringevaluations + searchstring + sortstring + ';')
     .then(function (data) {
       res.status(200)
         .json({
