@@ -5,7 +5,9 @@ CREATE DATABASE thehybridspace;
 
 CREATE TABLE datasets (
   Dataset SERIAL PRIMARY KEY,
-  Name VARCHAR(100)
+  Name VARCHAR(100),
+  Slider1Text VARCHAR(100),
+  Slider2Text VARCHAR(100)
 );
 
 CREATE TABLE persons (
@@ -32,9 +34,16 @@ CREATE TABLE evaluations (
 
 CREATE TABLE datasettings (
   revision INTEGER PRIMARY KEY,
-  currentDataset INTEGER,
-  currentSlider1Text VARCHAR(100),
-  currentSlider2Text VARCHAR(100)
+  currentDataset INTEGER
+);
+
+CREATE VIEW currentsettings AS
+SELECT *
+FROM datasets
+WHERE dataset =
+(
+  SELECT currentDataset
+  FROM datasettings
 );
 
 
@@ -64,8 +73,8 @@ CREATE OR REPLACE FUNCTION trg_slider()
   RETURNS trigger AS
 $func$
 BEGIN
-NEW.slider1text := (SELECT currentslider1text FROM datasettings);
-NEW.slider2text := (SELECT currentslider2text FROM datasettings);
+NEW.slider1text := (SELECT slider1text FROM currentsettings);
+NEW.slider2text := (SELECT slider2text FROM currentsettings);
 RETURN NEW;
 END
 $func$ LANGUAGE plpgsql;
@@ -95,11 +104,11 @@ WHERE dataset =
   FROM datasettings
 );
 
-INSERT INTO datasets(name)
-  VALUES ('Default');
+INSERT INTO datasets(name, slider1text, slider2text)
+  VALUES ('Default', 'control', 'motivation');
 
-INSERT INTO datasettings(revision, currentDataset, "currentslider1text", "currentslider2text")
-  VALUES (1,1, 'Control', 'Effort');
+INSERT INTO datasettings(revision, currentDataset)
+  VALUES (1,1);
 
 INSERT INTO persons(Person, Password, Team, Collection)
   VALUES (1, 'heihei','Lag 1', 'Ving68');

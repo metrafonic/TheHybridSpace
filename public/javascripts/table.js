@@ -65,7 +65,9 @@ function setTable(a, context, uniquekey, perpage, callbackText, callback) {
                 button.addEventListener("click", function() {
                     callback(bodyrow.cells[z].innerHTML);
                 });
-                bodyrow.insertCell().appendChild(button);
+                if (callback!= undefined){
+                  bodyrow.insertCell().appendChild(button);
+                }
 
                 i++;
             }

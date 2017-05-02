@@ -23,6 +23,9 @@ module.exports = {
   createDataset: createDataset,
   updateDataset: updateDataset,
 
+  getAllSliders: getAllSliders,
+  updateSliders: updateSliders,
+
   getAllPersons: getAllPersons,
   getSinglePerson: getSinglePerson,
   createPerson: createPerson,
@@ -172,7 +175,7 @@ function removeEvaluation(req, res, next) {
 
 
 function getAllDatasets(req, res, next) {
-  db.any('select * from datasets')
+  db.any('select dataset, name from datasets')
     .then(function (data) {
       res.status(200)
         .json({
@@ -212,6 +215,36 @@ function updateDataset(req, res, next) {
         .json({
           status: 'success',
           message: 'Updated dataset'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function getAllSliders(req, res, next) {
+  db.any('select slider1text AS Slider1, slider2text AS Slider2 from currentsettings')
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: data,
+          message: 'Retrieved all slider values'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function updateSliders(req, res, next) {
+  db.none('UPDATE datasettings set currentslider1text = $1, currentslider2text=$2',
+    [req.body.slider1text, req.body.slider2text])
+    .then(function () {
+      res.status(200)
+        .json({
+          status: 'success',
+          message: 'Updated sliders'
         });
     })
     .catch(function (err) {
@@ -353,7 +386,7 @@ function getAllCollections(req, res, next) {
 
 function searchDB(req, res, next){
   searchstring = "";
-  intlist = ['evalid', 'person', 'x', 'y', 'slider1', 'slider2'];
+  intlist = ['evalid', 'person', 'x', 'y', 'slider1', 'slider2', 'dataset'];
   for (key in req.query){
       comparestringstart=" LIKE '";
       comparestringend="'";
@@ -367,8 +400,10 @@ function searchDB(req, res, next){
 
       //fix ambiguous error for person
       if (key == 'person'){
-        console.log("neger");
-        key='persons.person';
+        key='view_persons.person';
+      }
+      if (key == 'dataset'){
+        key='view_evaluations.dataset';
       }
 
       //Setup string

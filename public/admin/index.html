@@ -65,7 +65,9 @@
 
         function retrieveData(firsttime) {
             $.when(
-                $.getJSON(base + filter),
+                $.getJSON(base + filter)
+                .error(function() { $("#text1").html("<b>Status: </b> Unable to connect to server!");})
+                ,
                 $.getJSON('/api/collections')
             ).done(function(a, b, c) {
                 try {
@@ -74,10 +76,9 @@
                   }
                     setTable(a[0], "table1", "evalid", 15, "Delete", deleteEvaluation);
                     $("#evaluationnumbers").html(a[0].data.length);
-                    $("#text1").html("<b>Status: </b> Recieved all data");
+                    $("#text1").html("<b>Status: </b> OK");
                 } catch (err) {
                     console.log(err.message);
-                    $("#text1").html("<b>Status: </b> ERROR: " + err.message);
                 }
             });
         }
@@ -134,7 +135,7 @@
                         </h1>
                         <ol class="breadcrumb">
                             <li class="active">
-                                <i class="fa fa-dashboard"></i> Overview
+                                <i class="fa fa-dashboard"></i> <p id="text1">No data recieved</p>
                             </li>
                         </ol>
                     </div>
@@ -203,10 +204,6 @@
                     </div>
 
 
-                </div>
-                <div class="alert alert-warning">
-                    <p id="text1">No data recieved</p>
-                </div>
                 <!-- /.row -->
                 <div class="row">
 

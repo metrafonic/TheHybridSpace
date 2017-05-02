@@ -70,14 +70,17 @@
   function updateData(){
   	$.when(
   		$.getJSON('/api/datasets')
+      .error(function() { $("#text1").html("<b>Status: </b> Unable to connect to server!");})
+      ,
+      $.getJSON('/api/sliders')
   	).done(function(a, b){
   		try {
-  		    setTable(a, "table1", "dataset", 20, "Use", useDataset);
-          $("#personnumbers").html(a.data.length);
+  		    setTable(a[0], "table1", "dataset", 20, "Use", useDataset);
+          setTable(b[0], "table2", null, 10);
+          $("#text1").html("<b>Status: </b> OK");
   		}
   		catch(err) {
   		    console.log(err.message);
-  				$("#text1").html("<b>Status: </b> ERROR: " + err.message);
   		}
 
 
@@ -135,10 +138,12 @@
                         </h1>
                         <ol class="breadcrumb">
                             <li class="active">
-                                <i class="fa fa-dashboard"></i> Overview
+                                <i class="fa fa-dashboard"></i> <p id="text1">No data recieved</p>
+
                             </li>
                         </ol>
                     </div>
+
                 </div>
                 <!-- /.row -->
 
@@ -199,6 +204,12 @@
                         <div class="panel-body">
                           <h4>Customize sliders</h4>
 
+                          <div id=table2>
+                              <table class="table"></table>
+                              <button class="previousbutton">Previous</button>
+                              <button class="nextbutton">Next</button>
+                              <text class="pagetext">1</text>
+                          </div>
 
                         </div>
                       </div>

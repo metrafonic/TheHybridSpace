@@ -53,22 +53,33 @@
 
 
 
-  function viewPerson(person){
-  	var URL = "/person/?id=";
-  	window.open(URL + person, "popupWindow", "width=600,height=1200,scrollbars=yes");
+  function deletePerson(person){
+    $.ajax({
+        url: "/api/person/" + person,
+        type: 'DELETE',
+        success: function(result) {
+          $.notify("Successfully deleted person: " + person, {
+              position: "bottom right",
+              className: "bootstrap"
+          });
+
+            updateData();
+        }
+    });
   }
 
   function updateData(){
   	$.when(
   		$.getJSON('/api/persons')
+      .error(function() { $("#text1").html("<b>Status: </b> Unable to connect to server!");})
   	).done(function(a, b){
   		try {
-  		    setTable(a, "table1", "person", 20, "View", viewPerson);
+  		    setTable(a, "table1", "person", 20, "Delete", deletePerson);
           $("#personnumbers").html(a.data.length);
+          $("#text1").html("<b>Status: </b> OK");
   		}
   		catch(err) {
   		    console.log(err.message);
-  				$("#text1").html("<b>Status: </b> ERROR: " + err.message);
   		}
 
 
@@ -126,7 +137,7 @@
                         </h1>
                         <ol class="breadcrumb">
                             <li class="active">
-                                <i class="fa fa-dashboard"></i> Overview
+                                <i class="fa fa-dashboard"></i> <p id="text1">No data recieved</p>
                             </li>
                         </ol>
                     </div>
@@ -186,9 +197,7 @@
 
                               </div>
 
-                              <div class="text-right">
-                                  <p id="text1">No data recieved</p>
-                              </div>
+
                           </div>
                       </div>
                   </div>
