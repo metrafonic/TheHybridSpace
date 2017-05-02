@@ -19,6 +19,10 @@ module.exports = {
   updateEvaluation: updateEvaluation,
   removeEvaluation: removeEvaluation,
 
+  getAllDatasets: getAllDatasets,
+  createDataset: createDataset,
+  updateDataset: updateDataset,
+
   getAllPersons: getAllPersons,
   getSinglePerson: getSinglePerson,
   createPerson: createPerson,
@@ -30,8 +34,8 @@ module.exports = {
   searchDB:searchDB
 };
 
-selectstringevaluations = "select evalid, persons.person, team, collection, x, y, slider1, slider2, comment, time ";
-fromstringevaluations = "from persons INNER JOIN evaluations ON (persons.person = evaluations.person) ";
+selectstringevaluations = "select view_evaluations.dataset, evalid, view_persons.person, team, collection, x, y, slider1, slider1text, slider2, slider2text, comment, time ";
+fromstringevaluations = "from view_persons INNER JOIN view_evaluations ON (view_persons.person = view_evaluations.person) ";
 sortstring = "ORDER BY evalid";
 
 
@@ -43,7 +47,7 @@ function checkAuth(req, res, next, parentnext){
 
 function authenticatePerson(req, res, next, parentnext){
   req.body.person = parseInt(req.body.person);
-  db.one('select password from persons where person = $1', req.body.person)
+  db.one('select password from view_persons where person = $1', req.body.person)
     .then(function (data){
 
       if (data.password==req.body.password){
@@ -147,6 +151,8 @@ function updateEvaluation(req, res, next) {
     });
 }
 
+
+
 function removeEvaluation(req, res, next) {
   var evalID = parseInt(req.params.id);
   db.result('delete from evaluations where evalid = $1', evalID)
@@ -164,8 +170,58 @@ function removeEvaluation(req, res, next) {
     });
 }
 
+
+function getAllDatasets(req, res, next) {
+  db.any('select * from datasets')
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: data,
+          message: 'Retrieved all datasets'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+
+function createDataset(req, res, next) {
+  console.log(req.body.password);
+  db.none('insert into datasets(name)' +
+      'values(${name})',
+    req.body)
+    .then(function () {
+      res.status(200)
+        .json({
+          status: 'success',
+          message: 'Created Dataset'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function updateDataset(req, res, next) {
+  db.none('UPDATE datasettings set currentdataset = $1;',
+    [parseInt(req.params.id)])
+    .then(function () {
+      res.status(200)
+        .json({
+          status: 'success',
+          message: 'Updated dataset'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+
 function getAllPersons(req, res, next) {
-  db.any('select * from persons')
+  db.any('select * from view_persons')
     .then(function (data) {
       res.status(200)
         .json({
@@ -184,7 +240,7 @@ function getAllPersons(req, res, next) {
 
 function getSinglePerson(req, res, next) {
   var evalID = parseInt(req.params.id);
-  db.one('select * from persons where person = $1', evalID)
+  db.one('select * from view_persons where person = $1', evalID)
     .then(function (data) {
       res.status(200)
         .json({
@@ -266,7 +322,7 @@ function removePerson(req, res, next) {
 }
 
 function getAllTeams(req, res, next) {
-  db.any('select DISTINCT team from persons')
+  db.any('select DISTINCT team from view_persons')
     .then(function (data) {
       res.status(200)
         .json({
@@ -281,7 +337,7 @@ function getAllTeams(req, res, next) {
 }
 
 function getAllCollections(req, res, next) {
-  db.any('select DISTINCT collection from persons')
+  db.any('select DISTINCT collection from view_persons')
     .then(function (data) {
       res.status(200)
         .json({

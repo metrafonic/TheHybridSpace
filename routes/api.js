@@ -11,6 +11,10 @@ router.post('/evaluation', db.createSecureEvaluation);
 router.put('/evaluation/:id', db.updateEvaluation);
 router.delete('/evaluation/:id', db.removeEvaluation);
 
+router.get('/datasets', db.getAllDatasets);
+router.post('/dataset', db.createDataset);
+router.get('/dataset/:id', db.updateDataset);
+
 router.get('/persons', db.getAllPersons);
 router.get('/person/:id', db.getSinglePerson);
 
