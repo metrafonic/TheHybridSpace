@@ -74,7 +74,7 @@
       .error(function() { $("#text1").html("<b>Status: </b> Unable to connect to server!");})
   	).done(function(a, b){
   		try {
-  		    setTable(a, "table1", "person", 20, "Delete", deletePerson);
+  		    setTable(a, "table1", "pid", 20, "Delete", deletePerson);
           $("#personnumbers").html(a.data.length);
           $("#text1").html("<b>Status: </b> OK");
   		}

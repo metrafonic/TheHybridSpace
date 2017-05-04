@@ -13,7 +13,7 @@ router.delete('/evaluation/:id', db.removeEvaluation);
 
 router.get('/datasets', db.getAllDatasets);
 router.post('/dataset', db.createDataset);
-router.get('/dataset/:id', db.updateDataset);
+router.post('/dataset/:id', db.setDataset);
 
 router.get('/sliders', db.getAllSliders);
 router.post('/sliders', db.updateSliders);

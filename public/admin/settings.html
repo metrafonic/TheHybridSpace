@@ -28,9 +28,27 @@
       // wait for the DOM to be loaded
       $(document).ready(function() {
           // bind 'myForm' and provide a simple callback function
-          $('#dataform').ajaxForm({
+          $('#datasetform').ajaxForm({
               success: function() {
                   $.notify("Successfully added data", {
+                      position: "bottom right",
+                      className: "bootstrap"
+                  });
+                  updateData();
+
+              },
+              error: function() {
+                  $.notify("FAILED! Check network & input", {
+                      position: "bottom right",
+                      className: "error"
+                  });
+
+              },
+
+          });
+          $('#sliderform').ajaxForm({
+              success: function() {
+                  $.notify("Successfully set slider", {
                       position: "bottom right",
                       className: "bootstrap"
                   });
@@ -56,7 +74,7 @@
   function useDataset(dataset){
     $.ajax({
         url: "/api/dataset/" + dataset,
-        type: 'GET',
+        type: 'POST',
         success: function(result) {
           $.notify("Successfully changed dataset to: " + dataset, {
               position: "bottom right",
@@ -174,19 +192,16 @@
 
                               </div>
                               <h4>Create new dataset:</h4>
-                              <form id="dataform" action="/api/dataset" method="post" role="form">
+                              <form id="datasetform" action="/api/dataset" method="post" role="form">
                                 <table>
                                   <tr>
-                                          <td>
                                             <div class="form-group">
+                                              <td>
                                                 <input name="name" class="form-control" placeholder="Dataset name">
+                                                </td><td>
+                                                  <button type="submit" class="btn btn-default">Create dataset</button>
+                                                  </td>
                                             </div>
-                                          </td>
-                                        </tr>
-                                        <tr>
-                                          <td>
-                                            <button type="submit" class="btn btn-default">Create</button>
-                                          </td>
                                         </tr>
                                       </table>
 
@@ -202,7 +217,7 @@
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                          <h4>Customize sliders</h4>
+                          <h4>Current slider configuration:</h4>
 
                           <div id=table2>
                               <table class="table"></table>
@@ -210,6 +225,27 @@
                               <button class="nextbutton">Next</button>
                               <text class="pagetext">1</text>
                           </div>
+
+                          <h4>Set slider text</h4>
+
+                          <form id="sliderform" action="/api/sliders" method="post" role="form">
+                            <table>
+                              <tr>
+
+                                        <div class="form-group">
+                                          <td>
+                                            <input name="slider1text" class="form-control" placeholder="Slider 1">
+                                          </td><td>
+                                            <input name="slider2text" class="form-control" placeholder="Slider 2">
+                                          </td><td>
+                                            <button type="submit" class="btn btn-default">Set text</button>
+                                          </td>
+                                        </div>
+
+                                    </tr>
+                                  </table>
+
+                                    </form>
 
                         </div>
                       </div>

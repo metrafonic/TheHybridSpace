@@ -11,8 +11,9 @@ CREATE TABLE datasets (
 );
 
 CREATE TABLE persons (
-  Dataset INTEGER REFERENCES datasets,
-  Person INTEGER PRIMARY KEY,
+  PID SERIAL PRIMARY KEY,
+  Dataset INTEGER REFERENCES datasets(Dataset),
+  Person INTEGER,
   Team VARCHAR(10),
   Collection VARCHAR(10),
   Password VARCHAR(20) NOT NULL
@@ -21,7 +22,8 @@ CREATE TABLE persons (
 CREATE TABLE evaluations (
   Dataset INTEGER REFERENCES datasets,
   evalID SERIAL PRIMARY KEY,
-  Person INTEGER REFERENCES persons,
+  Person INTEGER,
+  PID INTEGER REFERENCES persons,
   Time timestamp default (now() at time zone 'utc'),
   X INTEGER,
   Y INTEGER,
@@ -69,6 +71,32 @@ FOR EACH ROW
 WHEN (NEW.dataset IS NULL)
 EXECUTE PROCEDURE trg_dataset();
 
+CREATE OR REPLACE FUNCTION trg_pid()
+  RETURNS trigger AS
+$func$
+BEGIN
+NEW.pid :=
+(
+  SELECT pid
+  FROM persons
+  WHERE persons.person = NEW.person
+  AND dataset =
+  (
+    SELECT currentDataset
+    FROM datasettings
+  )
+);
+
+RETURN NEW;
+END
+$func$ LANGUAGE plpgsql;
+
+CREATE TRIGGER def_pid_eval
+BEFORE INSERT ON evaluations
+FOR EACH ROW
+WHEN (NEW.pid IS NULL)
+EXECUTE PROCEDURE trg_pid();
+
 CREATE OR REPLACE FUNCTION trg_slider()
   RETURNS trigger AS
 $func$
@@ -87,7 +115,7 @@ EXECUTE PROCEDURE trg_slider();
 
 
 CREATE VIEW view_persons AS
-SELECT *
+SELECT pid, person, team, collection, password
 FROM persons
 WHERE dataset =
 (

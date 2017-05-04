@@ -21,7 +21,7 @@ module.exports = {
 
   getAllDatasets: getAllDatasets,
   createDataset: createDataset,
-  updateDataset: updateDataset,
+  setDataset: setDataset,
 
   getAllSliders: getAllSliders,
   updateSliders: updateSliders,
@@ -37,8 +37,8 @@ module.exports = {
   searchDB:searchDB
 };
 
-selectstringevaluations = "select view_evaluations.dataset, evalid, view_persons.person, team, collection, x, y, slider1, slider1text, slider2, slider2text, comment, time ";
-fromstringevaluations = "from view_persons INNER JOIN view_evaluations ON (view_persons.person = view_evaluations.person) ";
+selectstringevaluations = "select evalid, view_persons.person, team, collection, x, y, slider1, slider1text, slider2, slider2text, comment, time ";
+fromstringevaluations = "from view_persons INNER JOIN view_evaluations USING (pid)";
 sortstring = "ORDER BY evalid";
 
 
@@ -175,7 +175,7 @@ function removeEvaluation(req, res, next) {
 
 
 function getAllDatasets(req, res, next) {
-  db.any('select dataset, name from datasets')
+  db.any('SELECT dataset, name, COUNT(evalid) AS evaluations FROM datasets LEFT JOIN evaluations USING (dataset) GROUP BY datasets.dataset ORDER BY datasets.dataset')
     .then(function (data) {
       res.status(200)
         .json({
@@ -207,14 +207,14 @@ function createDataset(req, res, next) {
     });
 }
 
-function updateDataset(req, res, next) {
+function setDataset(req, res, next) {
   db.none('UPDATE datasettings set currentdataset = $1;',
     [parseInt(req.params.id)])
     .then(function () {
       res.status(200)
         .json({
           status: 'success',
-          message: 'Updated dataset'
+          message: 'Set dataset'
         });
     })
     .catch(function (err) {
@@ -238,7 +238,7 @@ function getAllSliders(req, res, next) {
 }
 
 function updateSliders(req, res, next) {
-  db.none('UPDATE datasettings set currentslider1text = $1, currentslider2text=$2',
+  db.none('UPDATE datasets set slider1text = $1, slider2text=$2 WHERE dataset = (SELECT currentDataset FROM datasettings)',
     [req.body.slider1text, req.body.slider2text])
     .then(function () {
       res.status(200)
@@ -338,8 +338,8 @@ function updatePerson(req, res, next) {
 }
 
 function removePerson(req, res, next) {
-  var person = parseInt(req.params.id);
-  db.result('delete from persons where person = $1', person)
+  var pid = parseInt(req.params.id);
+  db.result('delete from persons where pid = $1', pid)
     .then(function (result) {
       /* jshint ignore:start */
       res.status(200)

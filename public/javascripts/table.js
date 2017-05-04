@@ -45,7 +45,9 @@ function setTable(a, context, uniquekey, perpage, callbackText, callback) {
         var thead= tbody.insertRow();
         //Set header
         $.each(a.data[0], function(key, value) {
+          if (key != uniquekey) {
             thead.insertCell().outerHTML = "<th>" + key + "</th>"
+          }
         });
         i = 0;
         z = 0;
@@ -55,15 +57,18 @@ function setTable(a, context, uniquekey, perpage, callbackText, callback) {
                 j = 0;
                 $.each(field, function(i, field) {
                     if (i == uniquekey) {
-                        z = j
+                        z = j;
+                        bodyrow.id=field;
+                    }else{
+                      var newcell = bodyrow.insertCell();
+                      newcell.innerHTML = field;
                     }
-                    bodyrow.insertCell().innerHTML = field;
                     j++;
                 });
                 var button = document.createElement("button");
                 button.innerHTML = callbackText;
                 button.addEventListener("click", function() {
-                    callback(bodyrow.cells[z].innerHTML);
+                    callback(bodyrow.id);
                 });
                 if (callback!= undefined){
                   bodyrow.insertCell().appendChild(button);
