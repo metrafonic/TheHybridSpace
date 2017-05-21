@@ -34,6 +34,25 @@
       "8": "Very Satisfied",
       "9": "Extremely Satisfied"
     };
+
+    function updateData(){
+    	$.when(
+    		$.getJSON('/api/sliders')
+    	).done(function(a, b){
+    		try {
+            $("#slider1title").html(a.data[0].slider1);
+            $("#slider2title").html(a.data[0].slider2);
+    		}
+    		catch(err) {
+    		    console.log(err.message);
+    		}
+
+
+    	});
+    }
+    updateData();
+    setInterval(updateData, 10000);
+
     $(function () {
 
         // on page load, set the text of the label based the value of the range
@@ -82,13 +101,13 @@
         <input type="hidden" id="password" name="password">
         <table>
             <tr>
-              <td><b>Control: </b><label id="slider1text" /></td>
+              <td><b><label id="slider1title" /></b>: <label id="slider1text" /></td>
             </tr>
             <tr>
                 <td><input id="slider1" name="slider1" type="range" min="1" max="9" step="1" list="steplist"></td>
             </tr>
             <tr>
-              <td><b>Effort: </b><label id="slider2text" /></td>
+              <td><b><label id="slider2title" /></b>: <label id="slider2text" /></td>
             </tr>
             <tr>
                 <td><input id="slider2" name="slider2" type="range" min="1" max="9" step="1" list="steplist"></td>
