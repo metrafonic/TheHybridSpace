@@ -5,8 +5,6 @@ var db = require('../queries');
 var dl = require('../func/download');
 
 
-router.get('/evaluations', db.getAllEvaluations);
-router.get('/evaluation/:id', db.getSingleEvaluation);
 router.post('/evaluation', db.createSecureEvaluation);
 router.put('/evaluation/:id', db.updateEvaluation);
 router.delete('/evaluation/:id', db.removeEvaluation);
@@ -19,7 +17,6 @@ router.get('/sliders', db.getAllSliders);
 router.post('/sliders', db.updateSliders);
 
 router.get('/persons', db.getAllPersons);
-router.get('/person/:id', db.getSinglePerson);
 
 router.post('/person', db.createPerson);
 router.put('/person/:id', db.updatePerson);

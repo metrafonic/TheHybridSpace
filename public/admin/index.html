@@ -76,6 +76,8 @@
                   }
                     setTable(a[0], "table1", "evalid", 15, "Delete", deleteEvaluation);
                     $("#evaluationnumbers").html(a[0].data.length);
+                    $("#movementnumbers").html(a[0].movement);
+                    $("#averagenumbers").html(a[0].average);
                     $("#text1").html("<b>Status: </b> OK");
                 } catch (err) {
                     console.log(err.message);
@@ -142,74 +144,67 @@
                 </div>
 
                 <!-- /.row -->
-                <div class="row">
-                    <div class="col-lg-2">
-                      <div class="panel panel-primary">
-                              <div class="panel-heading">
-                                  <div class="row">
-                                      <div class="col-xs-2">
-                                          <i class="fa fa-comments fa-5x"></i>
-                                      </div>
-                                      <div class="col-xs-9 text-right">
-                                          <div class="huge" id="evaluationnumbers">0</div>
-                                          <div>Evaluations</div>
-                                      </div>
-                                  </div>
-                              </div>
-                              <a href="javascript:void(0);" onClick="addEvaluation()">
-                                  <div class="panel-footer">
-                                      <span class="pull-left">Add evaluation</span>
-                                      <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                      <div class="clearfix"></div>
-                                  </div>
-                              </a>
-                          </div>
-                    </div>
-                    <div class="col-lg-2">
-                      <div class="panel panel-yellow">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Filter Evaluations:</h3>
-                            </div>
-                            <div class="panel-body">
-                              Apply filter to the view:<br><b>Collection:</b>
-                                <div id="tablefilter"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-2">
-                      <div class="panel panel-green">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Download Data:</h3>
-                            </div>
-                            <div class="panel-body">
-                                Download with the current filters<br>
-                                This will convert the raw JSON data to CSV, for use in excel.<br>
-                                <a href="javascript:void(0);" onClick="downloadCSV()"><b>Download CSV data</b></a><br>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-2">
-                      <div class="panel panel-danger">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Browse API (Advanced):</h3>
-                            </div>
-                            <div class="panel-body">
-                                Use the API with the current filters to retrieve the data in JSON format<br>
-                                <a href="javascript:void(0);" onClick="browseAPI()">View JSON data</a><br>
-
-                              </small>
-
-                            </div>
-                        </div>
-                    </div>
 
 
                 <!-- /.row -->
                 <div class="row">
 
 
+                  <div class="col-lg-2">
+                    <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <i class="fa fa-comments fa-5x"></i>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <div class="huge" id="evaluationnumbers">0</div>
+                                        <div>Evaluations</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="javascript:void(0);" onClick="addEvaluation()">
+                                <div class="panel-footer">
+                                    <span class="pull-left">Add evaluation</span>
+                                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </a>
+                        </div>
 
-                    <div class="col-lg-12">
+                        <div class="panel panel-info">
+                          <div class="panel-heading">
+                                  <h3 class="panel-title">Filter Evaluations:</h3>
+                          </div>
+                          <div class="panel-body">
+                            <div class="col-xs-6 text-center">
+
+                                <div class="huge" id="movementnumbers">0</div>
+                                <div>Movement</div>
+                            </div>
+                            <div class="col-xs-6 text-center">
+                                <div class="huge" id="averagenumbers">0</div>
+                                <div>Average</div>
+
+                            </div>
+                          </div>
+                          </div>
+
+
+                    <div class="panel panel-yellow">
+                          <div class="panel-heading">
+                              <h3 class="panel-title">Filter Evaluations:</h3>
+                          </div>
+                          <div class="panel-body">
+                            Apply filter to the view:<br><b>Collection:</b>
+                              <div id="tablefilter"></div>
+                          </div>
+                      </div>
+                  </div>
+
+
+
+                    <div class="col-lg-8">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <h3 class="panel-title"><i class="fa fa-money fa-fw"></i>Evaluations</h3>
@@ -225,6 +220,7 @@
                                     <div id=table1>
 
                                     </div>
+                                    <a href="javascript:void(0);" onClick="downloadCSV()"><b>Download CSV data</b></a> | <a href="javascript:void(0);" onClick="browseAPI()">View JSON data</a><br>
 
                                 </div>
 

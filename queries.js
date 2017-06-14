@@ -13,8 +13,6 @@ var db = pgp(connectionString);
 // add query functions
 
 module.exports = {
-  getAllEvaluations: getAllEvaluations,
-  getSingleEvaluation: getSingleEvaluation,
   createSecureEvaluation: createSecureEvaluation,
   updateEvaluation: updateEvaluation,
   removeEvaluation: removeEvaluation,
@@ -27,7 +25,6 @@ module.exports = {
   updateSliders: updateSliders,
 
   getAllPersons: getAllPersons,
-  getSinglePerson: getSinglePerson,
   createPerson: createPerson,
   updatePerson: updatePerson,
   removePerson: removePerson,
@@ -72,38 +69,6 @@ function authenticatePerson(req, res, next, parentnext){
       return next(err);
     });
 }
-
-function getAllEvaluations(req, res, next) {
-  db.any(selectstringevaluations + fromstringevaluations + ' ;')
-    .then(function (data) {
-      res.status(200)
-        .json({
-          status: 'success',
-          data: data,
-          message: 'Retrieved ALL evaluations'
-        });
-    })
-    .catch(function (err) {
-      return next(err);
-    });
-}
-
-function getSingleEvaluation(req, res, next) {
-  var evalID = parseInt(req.params.id);
-  db.one(selectstringevaluations + fromstringevaluations + 'where evalid = $1', evalID)
-    .then(function (data) {
-      res.status(200)
-        .json({
-          status: 'success',
-          data: data,
-          message: 'Retrieved single evaluation'
-        });
-    })
-    .catch(function (err) {
-      return next(err);
-    });
-}
-
 
 
 function createSecureEvaluation(req, res, next){
@@ -270,40 +235,6 @@ function getAllPersons(req, res, next) {
 
 
 
-
-function getSinglePerson(req, res, next) {
-  var evalID = parseInt(req.params.id);
-  db.one('select * from view_persons where person = $1', evalID)
-    .then(function (data) {
-      res.status(200)
-        .json({
-          status: 'success',
-          data: data,
-          message: 'Retrieved single person'
-        });
-    })
-    .catch(function (err) {
-      return next(err);
-    });
-}
-
-function getPersonEvaluations(req, res, next) {
-  var person = parseInt(req.params.id);
-  db.any(selectstringevaluations + fromstringevaluations + 'where persons.person = $1', person)
-    .then(function (data) {
-      res.status(200)
-        .json({
-          status: 'success',
-          data: data,
-          message: 'Retrieved person evaluations'
-        });
-    })
-    .catch(function (err) {
-      return next(err);
-    });
-}
-
-
 function createPerson(req, res, next) {
   req.body.person = parseInt(req.body.person);
   console.log(req.body.password);
@@ -385,6 +316,8 @@ function getAllCollections(req, res, next) {
 }
 
 function searchDB(req, res, next){
+  datamovement=1;
+  dataaverage=2;
   searchstring = "";
   intlist = ['evalid', 'person', 'x', 'y', 'slider1', 'slider2', 'dataset'];
   for (key in req.query){
@@ -420,7 +353,10 @@ function searchDB(req, res, next){
         .json({
           status: 'success',
           data: data,
-          message: 'Retrieved person evaluations'
+          message: 'Retrieved person evaluations',
+          version: '1.0',
+          movement: datamovement,
+          average: dataaverage
         });
     })
     .catch(function (err) {
