@@ -1,77 +1,15 @@
 # TheHybridSpace - Backend
 **By Mathias Hedberg**
 
-## Requirements:
-1. Fedora Server
-2. PostgreSQL server
-3. NodeJS
-
-I have plans to integrate this as a docker container to avoid initialization.
-
-## Installing Postresql:
-
-Install software
-```
-sudo dnf install postgresql-server postgresql-contrib
-sudo postgresql-setup --initdb --unit postgresql
-sudo systemctl enable postgresql
-sudo systemctl start postgresql
-
-```
-
-Create user
-```
-sudo su - postgres
-bash-4.3$ createuser yourusername
-bash-4.3$ psql
-postgres=# ALTER USER yourusername CREATEDB;
-postgres=# \q
-exit
-createdb
-```
-
-
-Give access to db by editing /var/lib/pgsql/data/pg_hba.conf:
-```
-# Database administrative login by Unix domain socket
-local   all             all                                     trust
-
-# TYPE  DATABASE        USER            ADDRESS                 METHOD
-
-# "local" is for Unix domain socket connections only
-local   all             all                                     trust
-# IPv4 local connections:
-host    all             all             127.0.0.1/32            trust
-# IPv6 local connections:
-host    all             all             ::1/128                 trust
-
-```
-
-Restart Postrgesql:
-```
-sudo systemctl restart postgresql
-```
-
-## Installing & running:
-```
-# Install node dependancies
-npm install
-
-# Initialize PostgreSQL DB
-psql -f initdb/initdb.sql
-
-#Start service
-npm start
-```
 
 ## API Calls:
 
+HyybridSpace uses a standard REST API based on express.js on NodeJS
+
+### Search:
+The search call is used to get all evaluations 
+
 ### Evaluations:
-As of now, the API is split in two sections, /evaluation and /evaluation**s**.
-
-/evaluation presents the evaluation of a spesific unique identifier for all evaluations. Every new evaluation gets such an id, shown as "evalid" in the returned JSON string.
-
-/evaluation**s** presents one or more evaluations for a spesific person. Each person is identified by this there own unique ID, shown as "person" in the returned JSON string.
 
 Get all evaluations:
 ```
