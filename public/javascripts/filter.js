@@ -8,7 +8,6 @@ function addQueryField(parent, data){
   text.innerHTML=" = ";
   select = div.appendChild(select);
   $.each(data[0], function(key, value) {
-      console.log(key, value);
       option=document.createElement("option");
       option.innerHTML=key;
       select.appendChild(option);
@@ -22,7 +21,7 @@ function setFilter(context, callback, data) {
     var parent = document.getElementById(context);
     buttonAdd=document.createElement("button");
     br=document.createElement("br");
-    buttonAdd.innerHTML="Add query field";
+    buttonAdd.innerHTML="Add filter";
     buttonSearch=document.createElement("button");
     buttonSearch.innerHTML="Search";
     buttonAdd = parent.appendChild(buttonAdd);
@@ -34,18 +33,17 @@ function setFilter(context, callback, data) {
       addQueryField(parent, data);
     });
     buttonSearch.addEventListener("click", function(){
-      returnstring="?";
-      callback("?collection=Ving68");
+      returnstring="&";
       div = parent.getElementsByTagName('div');
       for (index = 0; index < div.length; ++index) {
         inputs = div[index].getElementsByTagName('input');
         selects = div[index].getElementsByTagName('select');
         options = div[index].getElementsByTagName('option');
-          console.log(options[selects[0].selectedIndex].innerHTML);
-          text= options[selects[0].selectedIndex].innerHTML + "=" + inputs[0].value + "&";
+          text= options[selects[0].selectedIndex].innerHTML + "=" + inputs[0].value;
           returnstring=returnstring + text;
       }
-      callback(returnstring);
+      window.location.search += returnstring;
+      callback(false);
     });
 
 }

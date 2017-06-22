@@ -24,20 +24,18 @@
     <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
     <script type="text/javascript" src="/javascripts/table.js"></script>
     <script type="text/javascript" src="/javascripts/filter.js"></script>
+    <script type="text/javascript" src="/javascripts/showfilters.js"></script>
     <script>
-        var filter = "";
 
-        function applyFilter(choice){
-          filter=choice;
-          updateData();
 
-        }
+
+
         function browseAPI(){
-          var URL = base + filter;
+          var URL = base + window.location.search;
           window.open(URL);
         }
         function downloadCSV(){
-          var URL = "/api/download"+ filter;
+          var URL = "/api/download"+ window.location.search;
           window.open(URL);
         }
 
@@ -64,21 +62,21 @@
         }
 
         function retrieveData(firsttime) {
+          showFilters("filters");
             $.when(
-                $.getJSON(base + filter)
+                $.getJSON(base + window.location.search)
                 .error(function() { $("#text1").html("<b>Status: </b> Unable to connect to server!");})
                 ,
                 $.getJSON('/api/collections')
             ).done(function(a, b, c) {
                 try {
                   if (firsttime){
-                    setFilter("tablefilter", applyFilter, a[0].data);
+                    setFilter("tablefilter", updateData, a[0].data);
                   }
                     setTable(a[0], "table1", "evalid", 15, "Delete", deleteEvaluation);
                     $("#evaluationnumbers").html(a[0].data.length);
-                    $("#movementnumbers").html(a[0].movement);
-                    $("#averagenumbers").html(a[0].average);
                     $("#text1").html("<b>Status: </b> OK");
+
                 } catch (err) {
                     console.log(err.message);
                 }
@@ -174,26 +172,19 @@
 
                         <div class="panel panel-info">
                           <div class="panel-heading">
-                                  <h3 class="panel-title">Filter Evaluations:</h3>
+                                  <h3 class="panel-title">Applied Filters:</h3>
                           </div>
                           <div class="panel-body">
-                            <div class="col-xs-6 text-center">
 
-                                <div class="huge" id="movementnumbers">0</div>
-                                <div>Movement</div>
-                            </div>
-                            <div class="col-xs-6 text-center">
-                                <div class="huge" id="averagenumbers">0</div>
-                                <div>Average</div>
+                                <div id="filters"></div>
 
-                            </div>
                           </div>
                           </div>
 
 
                     <div class="panel panel-yellow">
                           <div class="panel-heading">
-                              <h3 class="panel-title">Filter Evaluations:</h3>
+                              <h3 class="panel-title">Add Filters:</h3>
                           </div>
                           <div class="panel-body">
                             Apply filter to the view:<br><b>Collection:</b>
