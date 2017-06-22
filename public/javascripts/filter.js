@@ -21,17 +21,15 @@ function setFilter(context, callback, data) {
     var parent = document.getElementById(context);
     buttonAdd=document.createElement("button");
     br=document.createElement("br");
-    buttonAdd.innerHTML="Add filter";
     buttonSearch=document.createElement("button");
     buttonSearch.innerHTML="Search";
-    buttonAdd = parent.appendChild(buttonAdd);
+    addQueryField(parent, data);
     buttonSearch = parent.appendChild(buttonSearch);
-    parent.appendChild(document.createElement("hr"));
 
 
-    buttonAdd.addEventListener("click", function(){
-      addQueryField(parent, data);
-    });
+
+
+
     buttonSearch.addEventListener("click", function(){
       returnstring="&";
       div = parent.getElementsByTagName('div');
