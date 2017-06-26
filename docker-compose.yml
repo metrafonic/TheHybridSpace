@@ -1,7 +1,8 @@
 version: '2'
 services:
-  backend:
-    image: metrafonic/thehybridspace
+  web:
+    restart: always
+    build: .
     cpu_shares: 100
     mem_limit: 224288000
     environment:
@@ -12,11 +13,11 @@ services:
       - db
 
   db:
-    image: metrafonic/thehybridspace_db
+    restart: always
+    build: ./Docker/hybridspace_db/
     cpu_shares: 100
     mem_limit: 224288000
     environment:
       - DEBUG=false
       - DB_USER=postgres
       - DB_PASS=postgres
-
