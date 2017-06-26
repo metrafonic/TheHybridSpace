@@ -4,12 +4,26 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var basicAuth = require('basic-auth-connect');
+var auth = require('http-auth');
 
 var index = require('./routes/index');
 var api = require('./routes/api');
 var users = require('./routes/users');
 
+var adminUsername = process.env.ADMIN_USERNAME || "admin";
+var adminPassword = process.env.ADMIN_PASSWORD || "password";
+
 var app = express();
+
+var basic = auth.basic({
+        realm: "Web."
+    }, function (username, password, callback) { // Custom authentication method.
+        console.log(adminUsername, adminPassword);
+        callback(username === adminUsername && password === adminPassword);
+    }
+);
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -21,9 +35,11 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use('/admin', auth.connect(basic), express.static('public/admin'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(express.static('public'))
+//app.use(express.static('public'));
+
 app.use('/api', api);
 app.use('/users', users);
 
