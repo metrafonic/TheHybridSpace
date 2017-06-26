@@ -1,4 +1,3 @@
-DROP DATABASE IF EXISTS thehybridspace;
 CREATE DATABASE thehybridspace;
 
 \c thehybridspace;
