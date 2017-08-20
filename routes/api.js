@@ -16,6 +16,7 @@ router.post('/dataset/:id', db.setDataset);
 router.get('/sliders', db.getAllSliders);
 router.post('/sliders', db.updateSliders);
 
+router.get('/person/:id', db.getSinglePerson);
 router.get('/persons', db.getAllPersons);
 
 router.post('/person', db.createPerson);

@@ -42,7 +42,7 @@
         function updateData() {
             $.when(
                 $.getJSON('/api/person/' + getUrlParameter('id')),
-                $.getJSON('/api/search/?person=' + getUrlParameter('id'))
+                $.getJSON('/api/search?&person=' + getUrlParameter('id'))
             ).done(function(a, b) {
                 try {
                     parseData(b[0]);

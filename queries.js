@@ -24,6 +24,7 @@ module.exports = {
   getAllSliders: getAllSliders,
   updateSliders: updateSliders,
 
+  getSinglePerson: getSinglePerson,
   getAllPersons: getAllPersons,
   createPerson: createPerson,
   updatePerson: updatePerson,
@@ -217,6 +218,21 @@ function updateSliders(req, res, next) {
     });
 }
 
+function getSinglePerson(req, res, next) {
+  var evalID = parseInt(req.params.id);
+  db.one('select * from view_persons where person = $1', evalID)
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: data,
+          message: 'Retrieved single person'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
 
 function getAllPersons(req, res, next) {
   db.any('select * from view_persons')
