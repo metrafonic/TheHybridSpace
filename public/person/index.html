@@ -29,9 +29,9 @@
 
 <body>
     <div id="container"></div>
-    <b>Control</b>
+    <b><label id="slider1title" /></b>
     <div id="containerslider1"></div>
-    <b>Effort</b>
+    <b><label id="slider2title" /></b>
     <div id="containerslider2"></div>
     <text id="person"></text><br>
     <text id="team"></text><br>
@@ -42,10 +42,13 @@
         function updateData() {
             $.when(
                 $.getJSON('/api/person/' + getUrlParameter('id')),
-                $.getJSON('/api/search?&person=' + getUrlParameter('id'))
-            ).done(function(a, b) {
+                $.getJSON('/api/search?&person=' + getUrlParameter('id')),
+                $.getJSON('/api/sliders')
+            ).done(function(a, b, c) {
                 try {
                     parseData(b[0]);
+                    $("#slider1title").html(c[0].data[0].slider1);
+                    $("#slider2title").html(c[0].data[0].slider2);
                 } catch (err) {
                     console.log(err.message);
                 }
