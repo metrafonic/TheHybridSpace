@@ -118,10 +118,11 @@
   		    setTable(a[0], "table1", "dataset", 20, "Use", useDataset);
           setTable(b[0], "table2", null, 10);
           settime = new Date(c[0].data[0].opendatetime* 1);
+          ourtime = new Date(c[0].data[0].currenttime* 1);
           printtime = settime.toISOString().slice(0,10) + " " + settime.toTimeString().slice(0,8);
 
           $('#date_time').val(printtime.toString());
-          $("#texttime").html(printtime);
+          $("#texttime").html(ourtime.toISOString().slice(0,10) + " " + ourtime.toTimeString().slice(0,8));
           $("#text1").html("<b>Status: </b> OK");
 
 
@@ -287,12 +288,12 @@
                           </div>
                           <!-- /.panel-heading -->
                           <div class="panel-body">
-                            <h4>Current time:</h4>
+                            <h4>Current system time:</h4>
+                            What the system clock shows the time as. <br>
+                            <b><p id="texttime">No data recieved</p></b>
 
-                            <p id="texttime">No data recieved</p>
-
-                            <h4>Set new opening time</h4>
-
+                            <h4>Current opening time:</h4>
+                            When should the system allow users to add data:
                             <form id="timeform" action="/api/time" method="post" role="form">
                               <table>
                                 <tr>
@@ -301,7 +302,7 @@
                                             <td>
                                               <input name="time" id="date_time" class="form-control" placeholder="timestamp format">
                                             </td><td>
-                                              <button type="submit" class="btn btn-default">Set new time</button>
+                                              <button type="submit" class="btn btn-default">Save</button>
                                             </td>
                                           </div>
 

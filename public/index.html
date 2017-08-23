@@ -50,7 +50,7 @@ var closedstatus=0;
             $("#slider1title").html(a[0].data[0].slider1);
             $("#slider2title").html(a[0].data[0].slider2);
             settime = new Date(b[0].data[0].opendatetime* 1);
-            ourtime = new Date(new Date($.now()));
+            ourtime = new Date(b[0].data[0].currenttime* 1);
             if((settime.getTime()) > (ourtime.getTime()))
             {
               console.log(closedstatus);

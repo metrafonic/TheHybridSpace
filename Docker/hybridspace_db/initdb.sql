@@ -40,7 +40,7 @@ CREATE TABLE datasettings (
 );
 
 CREATE VIEW currentsettings AS
-SELECT *
+SELECT *, ((extract(epoch from now()) * 1000)) AS currenttime
 FROM datasets
 WHERE dataset =
 (

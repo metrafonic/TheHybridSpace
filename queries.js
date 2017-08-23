@@ -222,7 +222,7 @@ function updateSliders(req, res, next) {
 }
 
 function getTime(req, res, next) {
-  db.any('select opendatetime from currentsettings')
+  db.any('select opendatetime, currenttime from currentsettings')
     .then(function (data) {
       res.status(200)
         .json({
