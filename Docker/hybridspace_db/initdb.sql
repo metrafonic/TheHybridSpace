@@ -7,7 +7,7 @@ CREATE TABLE datasets (
   Name VARCHAR(100),
   Slider1Text VARCHAR(100),
   Slider2Text VARCHAR(100),
-  openDateTime bigint default ((extract(epoch from now()) * 1000))
+  openDateTime BIGINT default ((extract(epoch from now()) * 1000))
 );
 
 CREATE TABLE persons (
