@@ -35,13 +35,39 @@
         "9": "Max",
     };
 
-    function updateData(){
+var closedstatus=0;
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function updateData(closedstatus){
     	$.when(
-    		$.getJSON('/api/sliders')
+    		$.getJSON('/api/sliders'),
+        $.getJSON('/api/time')
     	).done(function(a, b){
     		try {
-            $("#slider1title").html(a.data[0].slider1);
-            $("#slider2title").html(a.data[0].slider2);
+            $("#slider1title").html(a[0].data[0].slider1);
+            $("#slider2title").html(a[0].data[0].slider2);
+            settime = new Date(b[0].data[0].opendatetime* 1);
+            ourtime = new Date(new Date($.now()));
+            if((settime.getTime()) > (ourtime.getTime()))
+            {
+              console.log(closedstatus);
+              //alert("Sorry we are closed, you may come back at " + settime.toLocaleString());
+              $("#maincontent").css("display", "none");
+              $("#altcontent").html("<br><br><br><br><br><br><br><br><br><h1>CLOSED</h1><center>The server is not accepting data at this time.<br><p>Come back " + settime.toLocaleString() + "<br>Leave this page open for a notification");
+              handleupdatetime(1);
+            }else{
+              $("#maincontent").css("display", "block");
+              $("#altcontent").html("");
+              if (closedstatus==1){
+                alert("Now open for data! Please submit!");
+              }
+
+              handleupdatetime(0);
+            }
+
     		}
     		catch(err) {
     		    console.log(err.message);
@@ -50,8 +76,15 @@
 
     	});
     }
-    updateData();
-    setInterval(updateData, 10000);
+    function handleupdatetime(status){
+      var millisecondsToWait = 5000;
+      setTimeout(function() {
+          updateData(status)
+          console.log("updated");
+      }, millisecondsToWait);
+    }
+
+    updateData(closedstatus);
 
     $(function () {
 
@@ -73,6 +106,7 @@
 </head>
 
 <body>
+  <div id="maincontent">
 
 
     <h1 id="title">The Hybrid Space</h1>
@@ -129,4 +163,7 @@
     </datalist>
 
 <a href="/admin"> ´</a>
+</div>
+<div id=altcontent>
+</div>
 </body>

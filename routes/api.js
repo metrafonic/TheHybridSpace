@@ -16,6 +16,9 @@ router.post('/dataset/:id', db.setDataset);
 router.get('/sliders', db.getAllSliders);
 router.post('/sliders', db.updateSliders);
 
+router.get('/time', db.getTime);
+router.post('/time', db.updateTime);
+
 router.get('/person/:id', db.getSinglePerson);
 router.get('/persons', db.getAllPersons);
 

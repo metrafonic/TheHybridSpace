@@ -24,6 +24,9 @@ module.exports = {
   getAllSliders: getAllSliders,
   updateSliders: updateSliders,
 
+  getTime: getTime,
+  updateTime: updateTime,
+
   getSinglePerson: getSinglePerson,
   getAllPersons: getAllPersons,
   createPerson: createPerson,
@@ -211,6 +214,36 @@ function updateSliders(req, res, next) {
         .json({
           status: 'success',
           message: 'Updated sliders'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function getTime(req, res, next) {
+  db.any('select opendatetime from currentsettings')
+    .then(function (data) {
+      res.status(200)
+        .json({
+          status: 'success',
+          data: data,
+          message: 'Retrieved opening time'
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function updateTime(req, res, next) {
+  db.none('UPDATE datasets set opendatetime = $1 WHERE dataset = (SELECT currentDataset FROM datasettings)',
+    [req.body.timestamp])
+    .then(function () {
+      res.status(200)
+        .json({
+          status: 'success',
+          message: 'Updated opening time'
         });
     })
     .catch(function (err) {

@@ -6,7 +6,8 @@ CREATE TABLE datasets (
   Dataset SERIAL PRIMARY KEY,
   Name VARCHAR(100),
   Slider1Text VARCHAR(100),
-  Slider2Text VARCHAR(100)
+  Slider2Text VARCHAR(100),
+  openDateTime bigint default ((extract(epoch from now()) * 1000))
 );
 
 CREATE TABLE persons (
@@ -23,7 +24,7 @@ CREATE TABLE evaluations (
   evalID SERIAL PRIMARY KEY,
   Person INTEGER,
   PID INTEGER REFERENCES persons,
-  Time timestamp default (now() at time zone 'utc'),
+  Time timestamp default (now()),
   X INTEGER,
   Y INTEGER,
   Slider1 INTEGER,

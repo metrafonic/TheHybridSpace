@@ -64,6 +64,27 @@
               },
 
           });
+          $('#timeform').ajaxForm({
+              beforeSubmit : function(arr, $form, options){
+                  arr.push({name:'timestamp', value: new Date($("#date_time").val()).getTime()})
+              },
+              success: function() {
+                  $.notify("Successfully updated open time", {
+                      position: "bottom right",
+                      className: "bootstrap"
+                  });
+                  updateData();
+
+              },
+              error: function() {
+                  $.notify("FAILED! Check network & input", {
+                      position: "bottom right",
+                      className: "error"
+                  });
+
+              },
+
+          });
       });
   </script>
   <script>
@@ -90,12 +111,19 @@
   		$.getJSON('/api/datasets')
       .error(function() { $("#text1").html("<b>Status: </b> Unable to connect to server!");})
       ,
-      $.getJSON('/api/sliders')
-  	).done(function(a, b){
+      $.getJSON('/api/sliders'),
+      $.getJSON('/api/time')
+  	).done(function(a, b, c){
   		try {
   		    setTable(a[0], "table1", "dataset", 20, "Use", useDataset);
           setTable(b[0], "table2", null, 10);
+          settime = new Date(c[0].data[0].opendatetime* 1);
+
+          $('#date_time').val(settime.toLocaleString());
+          $("#texttime").html(settime.toLocaleString());
           $("#text1").html("<b>Status: </b> OK");
+
+
   		}
   		catch(err) {
   		    console.log(err.message);
@@ -107,7 +135,7 @@
 
 
   updateData();
-  setInterval(updateData, 10000);
+  //setInterval(updateData, 10000);
   </script>
 
     <div id="wrapper">
@@ -250,6 +278,40 @@
                         </div>
                       </div>
                     </div>
+                    <div class="col-lg-5">
+                  <div class="panel panel-default">
+                          <div class="panel-heading">
+                              <h3 class="panel-title"><i class="fa fa-money fa-fw"></i>Opening time</h3>
+
+                          </div>
+                          <!-- /.panel-heading -->
+                          <div class="panel-body">
+                            <h4>Current time:</h4>
+
+                            <p id="texttime">No data recieved</p>
+
+                            <h4>Set new opening time</h4>
+
+                            <form id="timeform" action="/api/time" method="post" role="form">
+                              <table>
+                                <tr>
+
+                                          <div class="form-group">
+                                            <td>
+                                              <input name="time" id="date_time" class="form-control" placeholder="timestamp format">
+                                            </td><td>
+                                              <button type="submit" class="btn btn-default">Set new time</button>
+                                            </td>
+                                          </div>
+
+                                      </tr>
+                                    </table>
+
+                                      </form>
+
+                          </div>
+                        </div>
+                      </div>
 
 
 
