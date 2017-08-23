@@ -118,7 +118,7 @@
   		    setTable(a[0], "table1", "dataset", 20, "Use", useDataset);
           setTable(b[0], "table2", null, 10);
           settime = new Date(c[0].data[0].opendatetime* 1);
-          printtime = settime.toISOString().slice(0,10) + " " + settime.toLocaleTimeString();
+          printtime = settime.toISOString().slice(0,10) + " " + settime.toTimeString().slice(0,8);
 
           $('#date_time').val(printtime.toString());
           $("#texttime").html(printtime);
