@@ -29,6 +29,7 @@
 
 <body>
     <div id="container"></div>
+    <text id="travel"></text><br>
     <b><label id="slider1title" /></b>
     <div id="containerslider1"></div>
     <b><label id="slider2title" /></b>
@@ -56,6 +57,7 @@
                 $("#person").html("<b>Person: </b>" + a[0].data.person);
                 $("#team").html("<b>Team: </b>" + a[0].data.team);
                 $("#collection").html("<b>Group: </b>" + a[0].data.collection);
+		$("#travel").html("<center>Total travel: <b>" + a[0].data.travel + "</b></center>");
 
 
             });

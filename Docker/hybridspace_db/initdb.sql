@@ -31,6 +31,7 @@ CREATE TABLE evaluations (
   Slider1Text VARCHAR(100),
   Slider2 INTEGER,
   Slider2Text VARCHAR(100),
+  Travel DECIMAL,
   Comment VARCHAR(100)
 );
 
@@ -97,6 +98,8 @@ FOR EACH ROW
 WHEN (NEW.pid IS NULL)
 EXECUTE PROCEDURE trg_pid();
 
+
+
 CREATE OR REPLACE FUNCTION trg_slider()
   RETURNS trigger AS
 $func$
@@ -113,15 +116,35 @@ FOR EACH ROW
 WHEN (NEW.slider1text IS NULL)
 EXECUTE PROCEDURE trg_slider();
 
+CREATE OR REPLACE FUNCTION trg_travel()
+  RETURNS trigger AS
+$func$
+DECLARE 
+xtrav int;
+ytrav int;
+BEGIN
+xtrav := (@((SELECT x FROM evaluations WHERE pid = NEW.pid ORDER BY evalid DESC LIMIT 1 ) - NEW.x))^2;
+ytrav := (@((SELECT y FROM evaluations WHERE pid = NEW.pid ORDER BY evalid DESC LIMIT 1 ) - NEW.y))^2;
+NEW.travel := round(|/ (xtrav + ytrav));
+RETURN NEW;
+END
+$func$ LANGUAGE plpgsql;
+
+CREATE TRIGGER set_travel
+BEFORE INSERT ON evaluations
+FOR EACH ROW
+WHEN (NEW.travel IS NULL)
+EXECUTE PROCEDURE trg_travel();
 
 CREATE VIEW view_persons AS
-SELECT pid, person, team, collection, password
-FROM persons
-WHERE dataset =
+SELECT persons.pid, persons.person, team, collection, password, count(evalid) AS evaluations, sum(travel) AS travel
+FROM persons LEFT OUTER JOIN evaluations ON (persons.pid=evaluations.pid)
+WHERE persons.dataset =
 (
   SELECT currentDataset
   FROM datasettings
-);
+)
+GROUP BY persons.pid;
 
 CREATE VIEW view_evaluations AS
 SELECT *
@@ -141,5 +164,5 @@ INSERT INTO datasettings(revision, currentDataset)
 INSERT INTO persons(Person, Password, Team, Collection)
   VALUES (1, 'heihei','Lag 1', 'Ving68');
 
-INSERT INTO evaluations (Person, X, Y, Slider1, Comment)
-  VALUES (1, 2, 4 , 7, 'test');
+INSERT INTO evaluations (Person, X, Y, Slider1, Comment, travel)
+  VALUES (1, 2, 4 , 7, 'test', 0);

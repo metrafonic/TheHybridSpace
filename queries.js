@@ -35,10 +35,10 @@ module.exports = {
 
   getAllTeams: getAllTeams,
   getAllCollections: getAllCollections,
-  searchDB:searchDB
+  searchDB:searchDB,
 };
 
-selectstringevaluations = "select evalid, view_persons.person, team, collection, x, y, slider1, slider1text, slider2, slider2text, comment, time ";
+selectstringevaluations = "select evalid, view_persons.person, team, collection, x, y, view_evaluations.travel, slider1, slider1text, slider2, slider2text, comment, time ";
 fromstringevaluations = "from view_persons INNER JOIN view_evaluations USING (pid)";
 sortstring = "ORDER BY evalid";
 
@@ -252,19 +252,20 @@ function updateTime(req, res, next) {
 }
 
 function getSinglePerson(req, res, next) {
-  var evalID = parseInt(req.params.id);
-  db.one('select * from view_persons where person = $1', evalID)
-    .then(function (data) {
-      res.status(200)
-        .json({
-          status: 'success',
-          data: data,
-          message: 'Retrieved single person'
-        });
-    })
-    .catch(function (err) {
-      return next(err);
-    });
+  var person = parseInt(req.params.id);
+		db.one('select * from view_persons where person = $1', person)
+		    .then(function (data) {
+		      res.status(200)
+			.json({
+			  status: 'success',
+			  data: data,
+			  message: 'Retrieved single person'
+			});
+		    })
+		    .catch(function (err) {
+		      return next(err);
+		    });
+  
 }
 
 function getAllPersons(req, res, next) {
@@ -413,3 +414,6 @@ function searchDB(req, res, next){
     });
 
 }
+
+
+
