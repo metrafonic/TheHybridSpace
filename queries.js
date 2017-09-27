@@ -336,7 +336,7 @@ function removePerson(req, res, next) {
 }
 
 function getAllTeams(req, res, next) {
-  db.any('select DISTINCT team from view_persons')
+  db.any('select * from view_teams')
     .then(function (data) {
       res.status(200)
         .json({

@@ -75,13 +75,15 @@
 
   function updateData(){
   	$.when(
-  		$.getJSON('/api/persons')
+  		$.getJSON('/api/persons'),
+  		$.getJSON('/api/teams')
       .error(function() { $("#text1").html("<b>Status: </b> Unable to connect to server!");})
   	).done(function(a, b){
   		try {
-  		    setTable(a, "table1", "person", 20, "View", viewPerson);
+  		    setTable(a[0], "table1", "person", 20, "View", viewPerson);
+		    setTable(b[0], "table2", "team", 20, "View");
           console.log(a);
-          $("#personnumbers").html(a.data.length);
+          $("#personnumbers").html(a[0].data.length);
           $("#text1").html("<b>Status: </b> OK");
   		}
   		catch(err) {
@@ -202,7 +204,33 @@
                           </div>
                       </div>
                   </div>
+                  <div class="col-lg-6">
+                      <div class="panel panel-default">
+                          <div class="panel-heading">
+                              <h3 class="panel-title"><i class="fa fa-money fa-fw"></i>All Teams</h3>
 
+                          </div>
+
+                          <div class="panel-body">
+
+                              <div class="table-responsive">
+
+
+                                <div id=table2>
+                                    <table class="table"></table>
+                                    <button class="previousbutton">Previous</button>
+                                    <button class="nextbutton">Next</button>
+                                    <text class="pagetext">1</text>
+                                </div>
+
+                              </div>
+
+
+                          </div>
+                      </div>
+                  </div>
+                  
+		  
                   <div class="col-lg-6">
                 <div class="panel panel-default">
                         <div class="panel-heading">
@@ -269,6 +297,8 @@
 
                               </div>
                             </div>
+
+
                     </div>
 
 

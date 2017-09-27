@@ -155,6 +155,10 @@ WHERE dataset =
   FROM datasettings
 );
 
+CREATE VIEW view_teams AS
+SELECT team, collection, count(person) AS members, sum(evaluations) AS evaluatons, sum(travel) AS travel
+FROM view_persons GROUP BY collection,team;
+
 INSERT INTO datasets(name, slider1text, slider2text)
   VALUES ('Default', 'control', 'motivation');
 
