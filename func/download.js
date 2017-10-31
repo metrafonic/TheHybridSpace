@@ -16,16 +16,26 @@ var myCars = [{
 
 
 module.exports = {
-    downloadCSV: downloadCSV
+    downloadCSV: downloadCSV,
+    downloadCSVPersons: downloadCSVPersons,
+    downloadCSVTeams: downloadCSVTeams
 }
 
+function downloadCSV(req,res,next){
+  download(req,res,next,"http://127.0.0.1:3000/api/search")
+}
+function downloadCSVPersons(req,res,next){
+  download(req,res,next,"http://127.0.0.1:3000/api/teams")
+}
+function downloadCSVTeams(req,res,next){
+  download(req,res,next,"http://127.0.0.1:3000/api/persons")
+}
 
-
-function downloadCSV(req, res, next) {
+function download(req, res, next, rurl) {
 
     var request = require("request");
     request({
-        url: "http://127.0.0.1:3000/api/search",
+        url: rurl,
         method: "GET",
         qs: req.query
     }, function(error, response, body) {

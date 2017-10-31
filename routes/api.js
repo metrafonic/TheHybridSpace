@@ -32,5 +32,7 @@ router.get('/collections', db.getAllCollections);
 router.get('/search', db.searchDB);
 
 router.get('/download', dl.downloadCSV);
+router.get('/downloadpersons', dl.downloadCSVPersons);
+router.get('/downloadteams', dl.downloadCSVTeams);
 
 module.exports = router;
