@@ -25,10 +25,10 @@ function downloadCSV(req,res,next){
   download(req,res,next,"http://127.0.0.1:3000/api/search")
 }
 function downloadCSVPersons(req,res,next){
-  download(req,res,next,"http://127.0.0.1:3000/api/teams")
+  download(req,res,next,"http://127.0.0.1:3000/api/persons")
 }
 function downloadCSVTeams(req,res,next){
-  download(req,res,next,"http://127.0.0.1:3000/api/persons")
+  download(req,res,next,"http://127.0.0.1:3000/api/teams")
 }
 
 function download(req, res, next, rurl) {
